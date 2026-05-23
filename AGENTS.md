@@ -1,65 +1,54 @@
 # chess_ai_desktop Agent Guide
 
-This file is the working entry point for the `chess_ai_desktop` subproject.
-Before making changes, read this file first, then read the task-relevant docs
-and source files.
+This file is the entry point for the `chess_ai_desktop` subproject.
+Read this first, then open the task-relevant docs and source files.
 
 ## Read First
 
 1. `../AGENTS.md`
-   - Workspace-wide rules and the three-phase workflow: `分析問題`,
-     `制定方案`, `執行方案`.
-2. `docs/ui-style-guide.md`
-   - UI visual direction, layout rules, and design guidance for the chess board
-     and right-side control panel.
-3. `docs/theme-scene-prompts.md`
-   - Image-generation prompts, asset naming rules, and expansion workflow for
-     board theme scene backgrounds.
+   - Workspace-wide rules and the three-phase workflow
+2. `docs/design-guide.md`
+   - UI direction, theme rules, and theme asset guidance
+3. `docs/image-assets.md`
+   - Image generation and post-processing workflow
 
 ## Common Source Entry Points
 
 - `lib/src/app.dart`
-  - Main screen layout, backdrop scene, board workspace, and player/opponent
-    information.
+  - Main layout, backdrop scene, board workspace, and player/opponent info
 - `lib/src/theme/board_theme.dart`
-  - Board theme catalog. Update this first when adding themes, backdrop images,
-    or board color palettes.
+  - Board theme catalog and theme asset registration
 - `lib/src/widgets/chess_board.dart`
-  - Board squares, pieces, move hints, selection state, and legal-target
-    rendering.
+  - Board squares, pieces, move hints, and selection state
 - `lib/src/widgets/control_panel.dart`
-  - Right-side control panel, Bot/Match/Coach/LLM tabs, and theme picker UI.
+  - Right-side control panel and theme picker UI
 - `lib/src/controllers/game_controller.dart`
-  - Game state and interaction flow.
+  - Game state and interaction flow
 - `lib/src/models/session_config.dart`
-  - Match configuration model, including `boardTheme`.
+  - Match configuration, including `boardTheme`
 
-## Theme And Image Asset Rules
+## Theme And Asset Rules
 
-- Store scene backdrop images in `assets/chess/themes/`.
-- Store chess piece images under `assets/chess/pieces/`; do not delete existing
-  SVG/PNG assets casually.
-- When adding a new theme, update all of these:
+- Store scene backdrops in `assets/chess/themes/`
+- Store piece assets in `assets/chess/pieces/`
+- Keep generated theme images 16:9, English-free, watermark-free, and low
+  distraction in the center
+- When adding a new theme, update:
   - `BoardThemeId`
   - `BoardThemeId.label`
   - `BoardThemeId.localizedLabel`
   - `boardThemeStyles`
-  - `docs/theme-scene-prompts.md`
-- `pubspec.yaml` already declares `assets/chess/themes/`, so adding images to
-  that folder usually does not require another pubspec change.
-- Generated images must be 16:9, with no text, no watermark, no people, and no
-  chess pieces. Keep the center low-distraction and place detail near the edges.
+  - `docs/design-guide.md`
 
 ## Workflow Requirements
 
-- For medium or large tasks, start with `【分析問題】`; do not jump straight into
-  code changes.
-- Before changing UI, verify the change fits `docs/ui-style-guide.md`.
-- Before changing themes or generating images, read
-  `docs/theme-scene-prompts.md`.
+- For medium or large tasks, start with `【分析問題】`
+- Before changing UI, check `docs/design-guide.md`
+- Before changing theme assets, check `docs/design-guide.md` and
+  `docs/image-assets.md`
 - After implementation, run at least:
   - `dart format <changed dart files>`
   - `flutter analyze`
   - `flutter test`
-- Do not run `git commit` or `git push` unless explicitly asked.
-- Do not start a development server unless explicitly asked.
+- Do not run `git commit` or `git push` unless explicitly asked
+- Do not start a development server unless explicitly asked

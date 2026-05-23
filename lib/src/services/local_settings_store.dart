@@ -104,7 +104,7 @@ class LocalSettingsStore {
   Future<File> _settingsFile() async {
     final directory =
         _baseDirectory?.path ?? File(Platform.resolvedExecutable).parent.path;
-    return File('$directory\\settings.json');
+    return File('$directory${Platform.pathSeparator}settings.json');
   }
 
   Future<void> _enqueueWrite(Future<void> Function() action) async {

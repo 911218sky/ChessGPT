@@ -124,6 +124,71 @@ class _CollapsibleControlSectionBandState
   }
 }
 
+class InlineCollapsibleSection extends StatefulWidget {
+  const InlineCollapsibleSection({
+    super.key,
+    required this.title,
+    required this.child,
+    this.initiallyExpanded = false,
+  });
+
+  final String title;
+  final Widget child;
+  final bool initiallyExpanded;
+
+  @override
+  State<InlineCollapsibleSection> createState() =>
+      _InlineCollapsibleSectionState();
+}
+
+class _InlineCollapsibleSectionState extends State<InlineCollapsibleSection> {
+  late bool _expanded = widget.initiallyExpanded;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        InkWell(
+          borderRadius: BorderRadius.circular(14),
+          onTap: () => setState(() => _expanded = !_expanded),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 2),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    widget.title,
+                    style: Theme.of(
+                      context,
+                    ).textTheme.labelLarge?.copyWith(color: Colors.white70),
+                  ),
+                ),
+                AnimatedRotation(
+                  turns: _expanded ? 0.5 : 0,
+                  duration: const Duration(milliseconds: 180),
+                  child: const Icon(
+                    Icons.keyboard_arrow_down_rounded,
+                    color: Colors.white70,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 8),
+        ClipRect(
+          child: AnimatedSize(
+            duration: const Duration(milliseconds: 180),
+            curve: Curves.easeOutCubic,
+            child: _expanded ? widget.child : const SizedBox.shrink(),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 class SquareIconAction extends StatelessWidget {
   const SquareIconAction({
     super.key,
@@ -357,6 +422,7 @@ class LabeledTextField extends StatelessWidget {
     required this.onChanged,
     this.obscureText = false,
     this.hintText,
+    this.readOnly = false,
   });
 
   final String label;
@@ -364,6 +430,7 @@ class LabeledTextField extends StatelessWidget {
   final ValueChanged<String> onChanged;
   final bool obscureText;
   final String? hintText;
+  final bool readOnly;
 
   @override
   Widget build(BuildContext context) {
@@ -375,7 +442,8 @@ class LabeledTextField extends StatelessWidget {
         TextFormField(
           controller: controller,
           obscureText: obscureText,
-          onChanged: onChanged,
+          readOnly: readOnly,
+          onChanged: readOnly ? null : onChanged,
           decoration: InputDecoration(helperText: hintText),
         ),
       ],

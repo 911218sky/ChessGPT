@@ -1,30 +1,115 @@
 # Chess AI Desktop
 
-Windows-first Flutter desktop project for a local Stockfish chess opponent with
-optional LLM banter, hint explanations, and post-game recaps.
+Windows-first Flutter desktop app for playing chess against a local Stockfish
+engine, with optional LLM banter, hints, and post-game recap text.
+
+## Docs
+
+- [docs/design-guide.md](docs/design-guide.md)
+  - UI direction, theme rules, and theme asset guidance
+- [docs/image-assets.md](docs/image-assets.md)
+  - Image generation and post-processing workflow
 
 ## Status
 
-- Flutter desktop scaffold created
-- Windows desktop enabled
-- Portable settings persistence enabled through local `settings.json`
-- Windows release packaging and GitHub Actions workflows included
-- Current UI guidance tracked in [docs/ui-style-guide.md](docs/ui-style-guide.md)
+- Flutter desktop scaffold is in place
+- Windows desktop is enabled
+- Local `settings.json` persistence is supported
+- Windows packaging and GitHub Actions are included
 
-## Local Commands
+## Common Commands
 
 ```bash
-dart format --set-exit-if-changed .
-flutter analyze
-flutter test
-flutter run -d windows
-flutter build windows --release
+rtk uv run python .\tools\sync_pubspec_assets.py
+rtk dart format --set-exit-if-changed .
+rtk flutter analyze
+rtk flutter test
+rtk flutter run -d windows
+rtk flutter build windows --release
 ```
 
-## What Does Not Go Into Git
+## Image Generation Setup
 
-The repository intentionally does not track generated output or downloaded local
-runtime files:
+This repo includes a local Python 3.12 workflow for generating board
+backgrounds and theme overlays.
+
+The preferred asset path is transparent PNG generation for theme overlays
+where needed. Black-background cleanup remains available for older assets, but
+it is no longer the primary workflow.
+
+1. Create a local env file:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+2. Fill in:
+
+```text
+OPENAI_API_KEY=...
+OPENAI_BASE_URL=https://api.openai.com/v1
+OPENAI_IMAGE_MODEL=gpt-image-2
+```
+
+3. Install dependencies:
+
+```powershell
+rtk uv sync
+```
+
+4. Preview the batch:
+
+```powershell
+rtk uv run python .\tools\generate_openai_images.py --dry-run
+```
+
+5. Run the batch:
+
+```powershell
+rtk uv run python .\tools\generate_openai_images.py
+```
+
+6. Import generated assets into Flutter:
+
+```powershell
+rtk uv run python .\tools\import_generated_assets.py
+rtk uv run python .\tools\sync_pubspec_assets.py
+```
+
+Useful variants:
+
+```powershell
+rtk uv run python .\tools\generate_openai_images.py --limit 3
+rtk uv run python .\tools\generate_openai_images.py --only autumn-academy-overlay crystal-cavern-overlay
+rtk uv run python .\tools\generate_openai_images.py --output-dir .\generated_images\manual-run
+rtk uv run python .\tools\generate_openai_images.py --size 1536x1024 --quality high
+```
+
+Default batch file:
+
+```text
+tools\image_batches\chess_theme_assets.json
+```
+
+Generated output:
+
+```text
+generated_images\<timestamp>\
+```
+
+For the full workflow, see
+[docs/image-assets.md](docs/image-assets.md).
+
+When you add, remove, or rename asset subdirectories under
+`assets/chess/pieces/`, re-run:
+
+```powershell
+rtk uv run python .\tools\sync_pubspec_assets.py
+```
+
+## Files Not Tracked In Git
+
+These stay local:
 
 - `build/`
 - `.dart_tool/`
@@ -33,56 +118,45 @@ runtime files:
 - `settings.json`
 - `third_party/stockfish/windows/stockfish.exe`
 
-That keeps the repository clean and avoids GitHub's 100 MB single-file limit.
+## Stockfish Download
 
-## Download Stockfish For Packaging
+The bundled Windows `stockfish.exe` is not committed because it is too large
+for GitHub.
 
-GitHub cannot store the bundled `stockfish.exe` that was previously kept in the
-repo because the file is larger than 100 MB. Download it only when you need a
-local packaged build:
+Download it when needed:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\tools\download_stockfish.ps1
+rtk powershell -ExecutionPolicy Bypass -File .\tools\download_stockfish.ps1
 ```
 
-The script downloads the official Windows x64 Stockfish release into:
+Destination:
 
 ```text
 third_party\stockfish\windows\stockfish.exe
 ```
 
-The file stays local and is ignored by Git. During development, if the bundled
-binary is missing, the app can still fall back to a `stockfish` executable on
-`PATH`.
+If the bundled binary is missing, development can still fall back to a
+`stockfish` executable on `PATH`.
 
-### Environment Variables
-
-These variables override the defaults used by the download and release scripts:
+Environment overrides:
 
 - `CHESS_AI_DESKTOP_STOCKFISH_RELEASE_TAG`
 - `CHESS_AI_DESKTOP_STOCKFISH_ASSET_NAME`
 - `CHESS_AI_DESKTOP_STOCKFISH_DESTINATION_PATH`
 - `CHESS_AI_DESKTOP_APP_PUBLISHER`
 
-## Packaging Notes
+## Packaging
 
-- Windows app icon source: `windows/runner/resources/app_icon.ico`
-- The Windows executable icon is wired through `windows/runner/Runner.rc`
-- Runtime settings are stored as `settings.json` beside the packaged `.exe`
-- The Windows installer defaults to a per-user writable directory so the app
-  can still persist `settings.json` beside the installed executable
+- App icon source: `windows/runner/resources/app_icon.ico`
+- Executable icon wiring: `windows/runner/Runner.rc`
+- Runtime settings path: `settings.json` beside the packaged `.exe`
+- Installer script: `packaging/windows/chess_ai_desktop.iss`
 
 Local release build:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\tools\download_stockfish.ps1
-flutter build windows --release
-```
-
-Installer packaging uses:
-
-```text
-packaging/windows/chess_ai_desktop.iss
+rtk powershell -ExecutionPolicy Bypass -File .\tools\download_stockfish.ps1
+rtk flutter build windows --release
 ```
 
 ## GitHub Actions
@@ -90,52 +164,36 @@ packaging/windows/chess_ai_desktop.iss
 - `.github/workflows/ci.yml`
   - Runs formatting, `flutter analyze`, and `flutter test`
 - `.github/workflows/release.yml`
-  - Builds the Windows release on tags like `v1.0.0`
-  - Downloads Stockfish during the workflow
-  - Produces both a portable zip and a Windows installer
-  - Publishes the build artifacts to a GitHub Release
+  - Builds tagged Windows releases
+  - Downloads Stockfish during CI
+  - Produces a portable zip and installer
+  - Publishes artifacts to GitHub Releases
 
 ## Clean Removal
 
-To fully remove the app and its local data on Windows:
+To fully remove local app data and build output:
 
-1. Close the app if it is running.
-2. Delete the persisted settings file beside the packaged executable:
+1. Close the app.
+2. Delete local settings:
 
 ```powershell
 Remove-Item ".\settings.json" -Force
 ```
 
-This removes the local `settings.json` file stored under:
-
-```text
-<packaged-app-folder>\settings.json
-```
-
-3. Delete local build output from the repo:
+3. Delete build output:
 
 ```powershell
 Remove-Item ".\build" -Recurse -Force
 ```
 
-4. If you also want to clear Flutter-generated local metadata for this checkout:
+4. Optionally clear Flutter-generated metadata:
 
 ```powershell
-flutter clean
-```
-
-5. If you no longer want the downloaded Dart and Flutter package artifacts for
-this project, refresh dependencies again later with:
-
-```powershell
-flutter pub get
+rtk flutter clean
 ```
 
 ## Notes
 
-- Android warnings from `flutter doctor` are currently irrelevant for this
-  Windows-only first phase
-- Chess piece SVG assets are stored under `assets/chess/pieces/cburnett/`
-- Keep the bundled asset license notice when packaging the app
-- Stockfish release binaries are downloaded from the official Stockfish release
-  feed during packaging and are not committed to this repository
+- Android warnings from `flutter doctor` are irrelevant for this Windows-first
+  phase
+- Keep the bundled asset license notice when packaging

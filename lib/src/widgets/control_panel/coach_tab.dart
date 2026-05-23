@@ -60,7 +60,7 @@ class CoachTab extends StatelessWidget {
                   ),
           ),
           const SizedBox(height: 14),
-          ControlSectionBand(
+          CollapsibleControlSectionBand(
             title: strings.personality,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,

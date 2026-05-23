@@ -115,6 +115,21 @@ class AppStrings {
     AppLocale.zhHant => '棋盤主題',
   };
 
+  String get featuredThemes => switch (locale) {
+    AppLocale.en => 'Featured themes',
+    AppLocale.zhHant => '精選主題',
+  };
+
+  String get allThemes => switch (locale) {
+    AppLocale.en => 'All themes',
+    AppLocale.zhHant => '全部主題',
+  };
+
+  String get backdropOnly => switch (locale) {
+    AppLocale.en => 'Backdrop only',
+    AppLocale.zhHant => '只有背景',
+  };
+
   String get language => switch (locale) {
     AppLocale.en => 'Language',
     AppLocale.zhHant => '語言',
@@ -387,6 +402,11 @@ class AppStrings {
   String get personality => switch (locale) {
     AppLocale.en => 'Personality',
     AppLocale.zhHant => '個性',
+  };
+
+  String get current => switch (locale) {
+    AppLocale.en => 'Current',
+    AppLocale.zhHant => '目前',
   };
 
   String get personalityDescription => switch (locale) {

@@ -59,8 +59,11 @@ void main() {
 
     await store.savePreferences(preferences);
 
-    final settingsFile = File('${tempDirectory.path}\\settings.json');
+    final settingsFile = File(
+      '${tempDirectory.path}${Platform.pathSeparator}settings.json',
+    );
     expect(await settingsFile.exists(), isTrue);
+    expect(settingsFile.parent.path, tempDirectory.path);
 
     final decoded = jsonDecode(await settingsFile.readAsString());
     expect(decoded, isA<Map<String, Object?>>());

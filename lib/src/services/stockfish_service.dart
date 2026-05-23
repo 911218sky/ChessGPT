@@ -29,10 +29,12 @@ class StockfishService {
     final cores = Platform.numberOfProcessors;
     final detectedMemoryMb = await _windowsMemoryDetector();
     final usableMemoryMb = detectedMemoryMb ?? 4096;
-    final recommendedThreads = math.max(1, math.min(4, cores - 2));
+    // Keep auto-detected defaults conservative so desktop play does not
+    // monopolize CPU or RAM unless the user explicitly opts in.
+    final recommendedThreads = math.max(1, math.min(2, cores - 4));
     final recommendedHashMb = math.max(
-      64,
-      math.min(512, (usableMemoryMb * 0.05).round()),
+      48,
+      math.min(160, ((usableMemoryMb * 0.02) / 16).round() * 16),
     );
 
     return EngineHardwareProfile(

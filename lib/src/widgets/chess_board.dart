@@ -144,7 +144,7 @@ class _ChessBoardState extends State<ChessBoard> {
                     child: IgnorePointer(
                       child: RepaintBoundary(
                         child: _HintLinesOverlay(
-                          key: ValueKey(_hintMovesSignature),
+                          key: ValueKey('hint-lines-$_hintMovesSignature'),
                           moves: _hintMoves,
                           movesSignature: _hintMovesSignature,
                           orientation: widget.orientation,
@@ -877,6 +877,17 @@ class _SquareButton extends StatelessWidget {
                     ),
                   ),
                 ),
+                if (theme.boardTextureSet != null)
+                  Positioned.fill(
+                    child: Opacity(
+                      opacity: theme.boardTextureOpacity,
+                      child: Image.asset(
+                        theme.boardTextureSet!.assetFor(isLight),
+                        fit: BoxFit.cover,
+                        filterQuality: FilterQuality.medium,
+                      ),
+                    ),
+                  ),
                 if (isLastMove)
                   Positioned.fill(
                     child: Container(
@@ -902,11 +913,17 @@ class _SquareButton extends StatelessWidget {
                   ),
                 if (losingOverlay != null)
                   Positioned.fill(
-                    child: DecoratedBox(decoration: losingOverlay),
+                    child: DecoratedBox(
+                      key: ValueKey('losing-king-${square.name}'),
+                      decoration: losingOverlay,
+                    ),
                   ),
                 if (checkedOverlay != null)
                   Positioned.fill(
-                    child: DecoratedBox(decoration: checkedOverlay),
+                    child: DecoratedBox(
+                      key: ValueKey('checked-king-${square.name}'),
+                      decoration: checkedOverlay,
+                    ),
                   ),
                 if (showRankLabel)
                   Positioned(
@@ -963,8 +980,8 @@ class _SquareButton extends StatelessWidget {
                           losingSide: losingSide,
                           isLosingKing: isLosingKing,
                           child: FractionallySizedBox(
-                            widthFactor: 0.80,
-                            heightFactor: 0.80,
+                            widthFactor: 0.92,
+                            heightFactor: 0.92,
                             child: LayoutBuilder(
                               builder: (context, constraints) {
                                 final pieceSize = math.min(

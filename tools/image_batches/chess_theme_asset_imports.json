@@ -1,0 +1,196 @@
+{
+    "jobs":  [
+                 {
+                     "id":  "theme-classic-wood",
+                     "kind":  "copy",
+                     "input":  "generated_images/full-theme-refresh/themes/classic-wood-club.png",
+                     "output":  "assets/chess/themes/classic-wood-club.png"
+                 },
+                 {
+                     "id":  "board-classic-wood",
+                     "kind":  "board_texture_sheet",
+                     "input":  "generated_images/full-theme-refresh/board-textures/classic-wood-board-texture-sheet.png",
+                     "output_dir":  "assets/chess/board_textures/classic_wood"
+                 },
+                 {
+                     "id":  "theme-tournament-green",
+                     "kind":  "copy",
+                     "input":  "generated_images/full-theme-refresh/themes/tournament-green-hall.png",
+                     "output":  "assets/chess/themes/tournament-green-hall.png"
+                 },
+                 {
+                     "id":  "board-tournament-green",
+                     "kind":  "board_texture_sheet",
+                     "input":  "generated_images/full-theme-refresh/board-textures/tournament-green-board-texture-sheet.png",
+                     "output_dir":  "assets/chess/board_textures/tournament_green"
+                 },
+                 {
+                     "id":  "theme-ocean-slate",
+                     "kind":  "copy",
+                     "input":  "generated_images/full-theme-refresh/themes/ocean-slate-terrace.png",
+                     "output":  "assets/chess/themes/ocean-slate-terrace.png"
+                 },
+                 {
+                     "id":  "board-ocean-slate",
+                     "kind":  "board_texture_sheet",
+                     "input":  "generated_images/full-theme-refresh/board-textures/ocean-slate-board-texture-sheet.png",
+                     "output_dir":  "assets/chess/board_textures/ocean_slate"
+                 },
+                 {
+                     "id":  "theme-walnut",
+                     "kind":  "copy",
+                     "input":  "generated_images/full-theme-refresh/themes/walnut-study.png",
+                     "output":  "assets/chess/themes/walnut-study.png"
+                 },
+                 {
+                     "id":  "board-walnut",
+                     "kind":  "board_texture_sheet",
+                     "input":  "generated_images/full-theme-refresh/board-textures/walnut-board-texture-sheet.png",
+                     "output_dir":  "assets/chess/board_textures/walnut_study"
+                 },
+                 {
+                     "id":  "theme-midnight",
+                     "kind":  "copy",
+                     "input":  "generated_images/full-theme-refresh/themes/midnight-observatory.png",
+                     "output":  "assets/chess/themes/midnight-observatory.png"
+                 },
+                 {
+                     "id":  "board-midnight",
+                     "kind":  "board_texture_sheet",
+                     "input":  "generated_images/full-theme-refresh/board-textures/midnight-board-texture-sheet.png",
+                     "output_dir":  "assets/chess/board_textures/midnight_observatory"
+                 },
+                 {
+                     "id":  "theme-jungle-canopy",
+                     "kind":  "copy",
+                     "input":  "generated_images/full-theme-refresh/themes/jungle-arena.png",
+                     "output":  "assets/chess/themes/jungle-arena.png"
+                 },
+                 {
+                     "id":  "board-jungle-canopy",
+                     "kind":  "board_texture_sheet",
+                     "input":  "generated_images/full-theme-refresh/board-textures/jungle-canopy-board-texture-sheet.png",
+                     "output_dir":  "assets/chess/board_textures/jungle_canopy"
+                 },
+                 {
+                     "id":  "theme-coral-reef",
+                     "kind":  "copy",
+                     "input":  "generated_images/full-theme-refresh/themes/ocean-arena.png",
+                     "output":  "assets/chess/themes/ocean-arena.png"
+                 },
+                 {
+                     "id":  "board-coral-reef",
+                     "kind":  "board_texture_sheet",
+                     "input":  "generated_images/full-theme-refresh/board-textures/coral-reef-board-texture-sheet.png",
+                     "output_dir":  "assets/chess/board_textures/coral_reef"
+                 },
+                 {
+                     "id":  "theme-desert-sun",
+                     "kind":  "copy",
+                     "input":  "generated_images/full-theme-refresh/themes/desert-arena.png",
+                     "output":  "assets/chess/themes/desert-arena.png"
+                 },
+                 {
+                     "id":  "board-desert-sun",
+                     "kind":  "board_texture_sheet",
+                     "input":  "generated_images/full-theme-refresh/board-textures/desert-sun-board-texture-sheet.png",
+                     "output_dir":  "assets/chess/board_textures/desert_sun"
+                 },
+                 {
+                     "id":  "theme-frost-temple",
+                     "kind":  "copy",
+                     "input":  "generated_images/full-theme-refresh/themes/frost-temple.png",
+                     "output":  "assets/chess/themes/frost-temple.png"
+                 },
+                 {
+                     "id":  "board-frost-temple",
+                     "kind":  "board_texture_sheet",
+                     "input":  "generated_images/full-theme-refresh/board-textures/frost-temple-board-texture-sheet.png",
+                     "output_dir":  "assets/chess/board_textures/frost_temple"
+                 },
+                 {
+                     "id":  "theme-lava-forge",
+                     "kind":  "copy",
+                     "input":  "generated_images/full-theme-refresh/themes/lava-forge.png",
+                     "output":  "assets/chess/themes/lava-forge.png"
+                 },
+                 {
+                     "id":  "board-lava-forge",
+                     "kind":  "board_texture_sheet",
+                     "input":  "generated_images/full-theme-refresh/board-textures/lava-forge-board-texture-sheet.png",
+                     "output_dir":  "assets/chess/board_textures/lava_forge"
+                 },
+                 {
+                     "id":  "theme-sakura-garden",
+                     "kind":  "copy",
+                     "input":  "generated_images/full-theme-refresh/themes/sakura-garden.png",
+                     "output":  "assets/chess/themes/sakura-garden.png"
+                 },
+                 {
+                     "id":  "board-sakura-garden",
+                     "kind":  "board_texture_sheet",
+                     "input":  "generated_images/full-theme-refresh/board-textures/sakura-garden-board-texture-sheet.png",
+                     "output_dir":  "assets/chess/board_textures/sakura_garden"
+                 },
+                 {
+                     "id":  "theme-neon-city",
+                     "kind":  "copy",
+                     "input":  "generated_images/full-theme-refresh/themes/neon-city.png",
+                     "output":  "assets/chess/themes/neon-city.png"
+                 },
+                 {
+                     "id":  "board-neon-city",
+                     "kind":  "board_texture_sheet",
+                     "input":  "generated_images/full-theme-refresh/board-textures/neon-city-board-texture-sheet.png",
+                     "output_dir":  "assets/chess/board_textures/neon_city"
+                 },
+                 {
+                     "id":  "theme-royal-marble",
+                     "kind":  "copy",
+                     "input":  "generated_images/full-theme-refresh/themes/royal-marble.png",
+                     "output":  "assets/chess/themes/royal-marble.png"
+                 },
+                 {
+                     "id":  "board-royal-marble",
+                     "kind":  "board_texture_sheet",
+                     "input":  "generated_images/full-theme-refresh/board-textures/royal-marble-board-texture-sheet.png",
+                     "output_dir":  "assets/chess/board_textures/royal_marble"
+                 },
+                 {
+                     "id":  "theme-autumn-academy",
+                     "kind":  "copy",
+                     "input":  "generated_images/full-theme-refresh/themes/autumn-academy.png",
+                     "output":  "assets/chess/themes/autumn-academy.png"
+                 },
+                 {
+                     "id":  "board-autumn-academy",
+                     "kind":  "board_texture_sheet",
+                     "input":  "generated_images/full-theme-refresh/board-textures/autumn-academy-board-texture-sheet.png",
+                     "output_dir":  "assets/chess/board_textures/autumn_academy"
+                 },
+                 {
+                     "id":  "theme-crystal-cavern",
+                     "kind":  "copy",
+                     "input":  "generated_images/full-theme-refresh/themes/crystal-cavern.png",
+                     "output":  "assets/chess/themes/crystal-cavern.png"
+                 },
+                 {
+                     "id":  "board-crystal-cavern",
+                     "kind":  "board_texture_sheet",
+                     "input":  "generated_images/full-theme-refresh/board-textures/crystal-cavern-board-texture-sheet.png",
+                     "output_dir":  "assets/chess/board_textures/crystal_cavern"
+                 },
+                 {
+                     "id":  "theme-sky-citadel",
+                     "kind":  "copy",
+                     "input":  "generated_images/full-theme-refresh/themes/sky-citadel.png",
+                     "output":  "assets/chess/themes/sky-citadel.png"
+                 },
+                 {
+                     "id":  "board-sky-citadel",
+                     "kind":  "board_texture_sheet",
+                     "input":  "generated_images/full-theme-refresh/board-textures/sky-citadel-board-texture-sheet.png",
+                     "output_dir":  "assets/chess/board_textures/sky_citadel"
+                 }
+             ]
+}

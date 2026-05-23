@@ -7,17 +7,20 @@ import '../../models/session_config.dart';
 import '../../theme/app_theme.dart';
 import '../bot_visuals.dart';
 import '../typewriter_text.dart';
+import 'primitives.dart';
 
 class BotsTab extends StatelessWidget {
   const BotsTab({
     super.key,
     required this.state,
     required this.currentProfile,
+    required this.onPersonaChanged,
     required this.onProfileSelected,
   });
 
   final GameState state;
   final BotProfile currentProfile;
+  final ValueChanged<Persona> onPersonaChanged;
   final ValueChanged<BotProfile> onProfileSelected;
 
   @override
@@ -31,15 +34,15 @@ class BotsTab extends StatelessWidget {
         children: [
           _HeroSpeech(
             profile: currentProfile,
+            persona: state.config.persona,
             strings: strings,
             message: state.opponentMessage,
           ),
           const SizedBox(height: 14),
           _PersonaDeck(
             state: state,
-            currentProfile: currentProfile,
             strings: strings,
-            onProfileSelected: onProfileSelected,
+            onPersonaChanged: onPersonaChanged,
           ),
           const SizedBox(height: 14),
           for (final category in categories) ...[
@@ -65,11 +68,13 @@ class BotsTab extends StatelessWidget {
 class _HeroSpeech extends StatelessWidget {
   const _HeroSpeech({
     required this.profile,
+    required this.persona,
     required this.strings,
     required this.message,
   });
 
   final BotProfile profile;
+  final Persona persona;
   final AppStrings strings;
   final String message;
 
@@ -152,7 +157,7 @@ class _HeroSpeech extends StatelessWidget {
             Expanded(
               child: _ProfileStatPill(
                 label: strings.style,
-                value: profile.persona.localizedLabel(strings),
+                value: persona.localizedLabel(strings),
               ),
             ),
             const SizedBox(width: 10),
@@ -174,7 +179,7 @@ class _HeroSpeech extends StatelessWidget {
             border: Border.all(color: Colors.white10),
           ),
           child: Text(
-            profile.persona.localizedDescription(strings),
+            persona.localizedDescription(strings),
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               color: Colors.white70,
               height: 1.3,
@@ -189,15 +194,13 @@ class _HeroSpeech extends StatelessWidget {
 class _PersonaDeck extends StatelessWidget {
   const _PersonaDeck({
     required this.state,
-    required this.currentProfile,
     required this.strings,
-    required this.onProfileSelected,
+    required this.onPersonaChanged,
   });
 
   final GameState state;
-  final BotProfile currentProfile;
   final AppStrings strings;
-  final ValueChanged<BotProfile> onProfileSelected;
+  final ValueChanged<Persona> onPersonaChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -205,23 +208,11 @@ class _PersonaDeck extends StatelessWidget {
       for (final profile in botRoster) profile.persona,
     }.toList(growable: false);
 
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.05),
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: Colors.white10),
-      ),
-      padding: const EdgeInsets.all(16),
+    return CollapsibleControlSectionBand(
+      title: strings.personality,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            strings.personality,
-            style: Theme.of(
-              context,
-            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
-          ),
-          const SizedBox(height: 6),
           Text(
             strings.personalityDescription,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -238,19 +229,8 @@ class _PersonaDeck extends StatelessWidget {
                 _PersonaCard(
                   persona: persona,
                   strings: strings,
-                  selected: currentProfile.persona == persona,
-                  roleExamples: profilesForPersona(persona)
-                      .take(2)
-                      .map((profile) => profile.localizedName(strings))
-                      .join(' / '),
-                  onTap: () {
-                    onProfileSelected(
-                      bestProfileForPersona(
-                        persona,
-                        preferredDifficulty: state.config.difficulty,
-                      ),
-                    );
-                  },
+                  selected: state.config.persona == persona,
+                  onTap: () => onPersonaChanged(persona),
                 ),
             ],
           ),
@@ -265,14 +245,12 @@ class _PersonaCard extends StatelessWidget {
     required this.persona,
     required this.strings,
     required this.selected,
-    required this.roleExamples,
     required this.onTap,
   });
 
   final Persona persona;
   final AppStrings strings;
   final bool selected;
-  final String roleExamples;
   final VoidCallback onTap;
 
   @override
@@ -281,6 +259,7 @@ class _PersonaCard extends StatelessWidget {
         ? AppColors.primary
         : botProfileTone(bestProfileForPersona(persona));
     return SizedBox(
+      key: ValueKey('persona-card-${persona.name}'),
       width: 184,
       child: InkWell(
         borderRadius: BorderRadius.circular(16),
@@ -307,13 +286,32 @@ class _PersonaCard extends StatelessWidget {
                 ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w800),
               ),
               const SizedBox(height: 6),
-              Text(
-                roleExamples,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: Theme.of(
-                  context,
-                ).textTheme.labelMedium?.copyWith(color: tone),
+              SizedBox(
+                height: 20,
+                child: selected
+                    ? Row(
+                        key: ValueKey('persona-current-${persona.name}'),
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.check_circle_rounded,
+                            size: 15,
+                            color: tone,
+                          ),
+                          const SizedBox(width: 5),
+                          Text(
+                            strings.current,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: Theme.of(context).textTheme.labelMedium
+                                ?.copyWith(
+                                  color: tone,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                          ),
+                        ],
+                      )
+                    : const SizedBox.shrink(),
               ),
               const SizedBox(height: 8),
               Text(

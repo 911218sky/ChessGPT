@@ -1,0 +1,234 @@
+﻿{
+    "defaults":  {
+                     "model":  "gpt-image-2",
+                     "background":  "opaque",
+                     "n":  1,
+                     "quality":  "high"
+                 },
+    "jobs":  [
+                 {
+                     "slug":  "classic-wood-background",
+                     "category":  "themes",
+                     "filename_prefix":  "classic-wood-club",
+                     "background":  "opaque",
+                     "prompt":  "Create a 16:9 landscape background for a polished Flutter desktop chess game. Scene: an intimate classic wood chess club with walnut wall panels, glass display cabinets, leather chairs, and amber table lamps. Composition: the center 55 percent must be calm, low-contrast, and free of detailed objects so the chess board and right control panel remain readable; place architecture, light, texture, and atmosphere near the edges. Style: premium strategy game key art, painterly but crisp, sophisticated, not cartoonish, not photoreal stock. Palette: warm walnut, boxwood cream, muted brass, deep espresso shadows. Include subtle chess-board geometry in the environment, but no actual chess pieces. Do not include text, logos, watermark, UI mockups, people, animals, letters, numbers, or readable signs."
+                 },
+                 {
+                     "slug":  "classic-wood-board-texture-sheet",
+                     "category":  "board_textures",
+                     "filename_prefix":  "classic-wood-board-texture-sheet",
+                     "background":  "opaque",
+                     "prompt":  "Create a top-down chess board material source sheet for a Flutter chess game. The image must contain exactly two equal vertical halves: left half is the light-square material, right half is the dark-square material. Theme material: polished boxwood and walnut grain with fine varnish, subtle end-grain variation, and restrained brass warmth. Flat orthographic texture only, no perspective, no board grid lines, no pieces, no coordinates, no labels, no text, no watermark. Make both halves tile-friendly, elegant, readable under chess pieces, with low-frequency detail and premium tactile surface quality."
+                 },
+                 {
+                     "slug":  "tournament-green-background",
+                     "category":  "themes",
+                     "filename_prefix":  "tournament-green-hall",
+                     "background":  "opaque",
+                     "prompt":  "Create a 16:9 landscape background for a polished Flutter desktop chess game. Scene: a quiet professional chess tournament hall with green felt accents, distant tables, soft overhead lights, and calm spectator aisles. Composition: the center 55 percent must be calm, low-contrast, and free of detailed objects so the chess board and right control panel remain readable; place architecture, light, texture, and atmosphere near the edges. Style: premium strategy game key art, painterly but crisp, sophisticated, not cartoonish, not photoreal stock. Palette: tournament green, ivory, charcoal, soft neutral light. Include subtle chess-board geometry in the environment, but no actual chess pieces. Do not include text, logos, watermark, UI mockups, people, animals, letters, numbers, or readable signs."
+                 },
+                 {
+                     "slug":  "tournament-green-board-texture-sheet",
+                     "category":  "board_textures",
+                     "filename_prefix":  "tournament-green-board-texture-sheet",
+                     "background":  "opaque",
+                     "prompt":  "Create a top-down chess board material source sheet for a Flutter chess game. The image must contain exactly two equal vertical halves: left half is the light-square material, right half is the dark-square material. Theme material: matte tournament board material with cream light squares and deep green playing surface, clean and low glare. Flat orthographic texture only, no perspective, no board grid lines, no pieces, no coordinates, no labels, no text, no watermark. Make both halves tile-friendly, elegant, readable under chess pieces, with low-frequency detail and premium tactile surface quality."
+                 },
+                 {
+                     "slug":  "ocean-slate-background",
+                     "category":  "themes",
+                     "filename_prefix":  "ocean-slate-terrace",
+                     "background":  "opaque",
+                     "prompt":  "Create a 16:9 landscape background for a polished Flutter desktop chess game. Scene: a misty coastal stone chess terrace above a dark sea, wet slate railings, soft fog, and distant horizon light. Composition: the center 55 percent must be calm, low-contrast, and free of detailed objects so the chess board and right control panel remain readable; place architecture, light, texture, and atmosphere near the edges. Style: premium strategy game key art, painterly but crisp, sophisticated, not cartoonish, not photoreal stock. Palette: sea slate, storm blue, mist white, mineral teal. Include subtle chess-board geometry in the environment, but no actual chess pieces. Do not include text, logos, watermark, UI mockups, people, animals, letters, numbers, or readable signs."
+                 },
+                 {
+                     "slug":  "ocean-slate-board-texture-sheet",
+                     "category":  "board_textures",
+                     "filename_prefix":  "ocean-slate-board-texture-sheet",
+                     "background":  "opaque",
+                     "prompt":  "Create a top-down chess board material source sheet for a Flutter chess game. The image must contain exactly two equal vertical halves: left half is the light-square material, right half is the dark-square material. Theme material: sea-worn slate and pale mineral stone, fine wet grain, low contrast, elegant coastal texture. Flat orthographic texture only, no perspective, no board grid lines, no pieces, no coordinates, no labels, no text, no watermark. Make both halves tile-friendly, elegant, readable under chess pieces, with low-frequency detail and premium tactile surface quality."
+                 },
+                 {
+                     "slug":  "walnut-background",
+                     "category":  "themes",
+                     "filename_prefix":  "walnut-study",
+                     "background":  "opaque",
+                     "prompt":  "Create a 16:9 landscape background for a polished Flutter desktop chess game. Scene: a refined dark walnut study with bookshelves, desk lamps, velvet shadows, and a quiet game table atmosphere. Composition: the center 55 percent must be calm, low-contrast, and free of detailed objects so the chess board and right control panel remain readable; place architecture, light, texture, and atmosphere near the edges. Style: premium strategy game key art, painterly but crisp, sophisticated, not cartoonish, not photoreal stock. Palette: dark walnut, honeywood, warm lamp gold, muted burgundy. Include subtle chess-board geometry in the environment, but no actual chess pieces. Do not include text, logos, watermark, UI mockups, people, animals, letters, numbers, or readable signs."
+                 },
+                 {
+                     "slug":  "walnut-board-texture-sheet",
+                     "category":  "board_textures",
+                     "filename_prefix":  "walnut-board-texture-sheet",
+                     "background":  "opaque",
+                     "prompt":  "Create a top-down chess board material source sheet for a Flutter chess game. The image must contain exactly two equal vertical halves: left half is the light-square material, right half is the dark-square material. Theme material: deep walnut and honeywood grain, satin finish, premium study-board surface with subtle natural imperfections. Flat orthographic texture only, no perspective, no board grid lines, no pieces, no coordinates, no labels, no text, no watermark. Make both halves tile-friendly, elegant, readable under chess pieces, with low-frequency detail and premium tactile surface quality."
+                 },
+                 {
+                     "slug":  "midnight-background",
+                     "category":  "themes",
+                     "filename_prefix":  "midnight-observatory",
+                     "background":  "opaque",
+                     "prompt":  "Create a 16:9 landscape background for a polished Flutter desktop chess game. Scene: a midnight observatory chess room with arched windows, star maps, moonlit brass instruments, and a calm central table area. Composition: the center 55 percent must be calm, low-contrast, and free of detailed objects so the chess board and right control panel remain readable; place architecture, light, texture, and atmosphere near the edges. Style: premium strategy game key art, painterly but crisp, sophisticated, not cartoonish, not photoreal stock. Palette: deep navy, moon silver, cool slate, restrained brass. Include subtle chess-board geometry in the environment, but no actual chess pieces. Do not include text, logos, watermark, UI mockups, people, animals, letters, numbers, or readable signs."
+                 },
+                 {
+                     "slug":  "midnight-board-texture-sheet",
+                     "category":  "board_textures",
+                     "filename_prefix":  "midnight-board-texture-sheet",
+                     "background":  "opaque",
+                     "prompt":  "Create a top-down chess board material source sheet for a Flutter chess game. The image must contain exactly two equal vertical halves: left half is the light-square material, right half is the dark-square material. Theme material: moonlit stone and dark celestial slate with faint star-map mineral flecks, elegant and readable. Flat orthographic texture only, no perspective, no board grid lines, no pieces, no coordinates, no labels, no text, no watermark. Make both halves tile-friendly, elegant, readable under chess pieces, with low-frequency detail and premium tactile surface quality."
+                 },
+                 {
+                     "slug":  "jungle-canopy-background",
+                     "category":  "themes",
+                     "filename_prefix":  "jungle-arena",
+                     "background":  "opaque",
+                     "prompt":  "Create a 16:9 landscape background for a polished Flutter desktop chess game. Scene: a lush jungle canopy chess clearing with mossy carved stone, filtered sunlight, vines at the edges, and a quiet open center. Composition: the center 55 percent must be calm, low-contrast, and free of detailed objects so the chess board and right control panel remain readable; place architecture, light, texture, and atmosphere near the edges. Style: premium strategy game key art, painterly but crisp, sophisticated, not cartoonish, not photoreal stock. Palette: moss green, jade stone, sunlit khaki, deep leaf shadow. Include subtle chess-board geometry in the environment, but no actual chess pieces. Do not include text, logos, watermark, UI mockups, people, animals, letters, numbers, or readable signs."
+                 },
+                 {
+                     "slug":  "jungle-canopy-board-texture-sheet",
+                     "category":  "board_textures",
+                     "filename_prefix":  "jungle-canopy-board-texture-sheet",
+                     "background":  "opaque",
+                     "prompt":  "Create a top-down chess board material source sheet for a Flutter chess game. The image must contain exactly two equal vertical halves: left half is the light-square material, right half is the dark-square material. Theme material: mossy jade stone and aged temple tile, subtle organic wear, refined top-down board texture. Flat orthographic texture only, no perspective, no board grid lines, no pieces, no coordinates, no labels, no text, no watermark. Make both halves tile-friendly, elegant, readable under chess pieces, with low-frequency detail and premium tactile surface quality."
+                 },
+                 {
+                     "slug":  "coral-reef-background",
+                     "category":  "themes",
+                     "filename_prefix":  "ocean-arena",
+                     "background":  "opaque",
+                     "prompt":  "Create a 16:9 landscape background for a polished Flutter desktop chess game. Scene: an underwater-inspired coral reef stone hall with pearl glow, blue mineral arches, and soft water-caustic light near the edges. Composition: the center 55 percent must be calm, low-contrast, and free of detailed objects so the chess board and right control panel remain readable; place architecture, light, texture, and atmosphere near the edges. Style: premium strategy game key art, painterly but crisp, sophisticated, not cartoonish, not photoreal stock. Palette: aqua blue, pearl ivory, coral rose, deep ocean shadow. Include subtle chess-board geometry in the environment, but no actual chess pieces. Do not include text, logos, watermark, UI mockups, people, animals, letters, numbers, or readable signs."
+                 },
+                 {
+                     "slug":  "coral-reef-board-texture-sheet",
+                     "category":  "board_textures",
+                     "filename_prefix":  "coral-reef-board-texture-sheet",
+                     "background":  "opaque",
+                     "prompt":  "Create a top-down chess board material source sheet for a Flutter chess game. The image must contain exactly two equal vertical halves: left half is the light-square material, right half is the dark-square material. Theme material: pearl slate, ocean stone, and soft coral mineral tones, polished but not glossy, low-distraction. Flat orthographic texture only, no perspective, no board grid lines, no pieces, no coordinates, no labels, no text, no watermark. Make both halves tile-friendly, elegant, readable under chess pieces, with low-frequency detail and premium tactile surface quality."
+                 },
+                 {
+                     "slug":  "desert-sun-background",
+                     "category":  "themes",
+                     "filename_prefix":  "desert-arena",
+                     "background":  "opaque",
+                     "prompt":  "Create a 16:9 landscape background for a polished Flutter desktop chess game. Scene: a sandstone desert chess courtyard at golden hour, bronze inlay arches at the edges, distant dunes, and a calm shaded center. Composition: the center 55 percent must be calm, low-contrast, and free of detailed objects so the chess board and right control panel remain readable; place architecture, light, texture, and atmosphere near the edges. Style: premium strategy game key art, painterly but crisp, sophisticated, not cartoonish, not photoreal stock. Palette: sunlit sandstone, bronze, warm ochre, dusk umber. Include subtle chess-board geometry in the environment, but no actual chess pieces. Do not include text, logos, watermark, UI mockups, people, animals, letters, numbers, or readable signs."
+                 },
+                 {
+                     "slug":  "desert-sun-board-texture-sheet",
+                     "category":  "board_textures",
+                     "filename_prefix":  "desert-sun-board-texture-sheet",
+                     "background":  "opaque",
+                     "prompt":  "Create a top-down chess board material source sheet for a Flutter chess game. The image must contain exactly two equal vertical halves: left half is the light-square material, right half is the dark-square material. Theme material: carved sandstone and muted bronze-influenced stone, subtle weathering, warm premium strategy-board texture. Flat orthographic texture only, no perspective, no board grid lines, no pieces, no coordinates, no labels, no text, no watermark. Make both halves tile-friendly, elegant, readable under chess pieces, with low-frequency detail and premium tactile surface quality."
+                 },
+                 {
+                     "slug":  "frost-temple-background",
+                     "category":  "themes",
+                     "filename_prefix":  "frost-temple",
+                     "background":  "opaque",
+                     "prompt":  "Create a 16:9 landscape background for a polished Flutter desktop chess game. Scene: a serene frost temple chess chamber with translucent ice columns, snowy distance, pale cyan glow, and a quiet center. Composition: the center 55 percent must be calm, low-contrast, and free of detailed objects so the chess board and right control panel remain readable; place architecture, light, texture, and atmosphere near the edges. Style: premium strategy game key art, painterly but crisp, sophisticated, not cartoonish, not photoreal stock. Palette: frost white, pale cyan, glacier blue, dark cold stone. Include subtle chess-board geometry in the environment, but no actual chess pieces. Do not include text, logos, watermark, UI mockups, people, animals, letters, numbers, or readable signs."
+                 },
+                 {
+                     "slug":  "frost-temple-board-texture-sheet",
+                     "category":  "board_textures",
+                     "filename_prefix":  "frost-temple-board-texture-sheet",
+                     "background":  "opaque",
+                     "prompt":  "Create a top-down chess board material source sheet for a Flutter chess game. The image must contain exactly two equal vertical halves: left half is the light-square material, right half is the dark-square material. Theme material: polished ice crystal and frosted stone, soft translucency, crisp but readable square materials. Flat orthographic texture only, no perspective, no board grid lines, no pieces, no coordinates, no labels, no text, no watermark. Make both halves tile-friendly, elegant, readable under chess pieces, with low-frequency detail and premium tactile surface quality."
+                 },
+                 {
+                     "slug":  "lava-forge-background",
+                     "category":  "themes",
+                     "filename_prefix":  "lava-forge",
+                     "background":  "opaque",
+                     "prompt":  "Create a 16:9 landscape background for a polished Flutter desktop chess game. Scene: a basalt forge chess hall with molten light only at the edges, iron arches, ember haze, and a dark calm center. Composition: the center 55 percent must be calm, low-contrast, and free of detailed objects so the chess board and right control panel remain readable; place architecture, light, texture, and atmosphere near the edges. Style: premium strategy game key art, painterly but crisp, sophisticated, not cartoonish, not photoreal stock. Palette: basalt black, ember orange, dark iron, warm smoke. Include subtle chess-board geometry in the environment, but no actual chess pieces. Do not include text, logos, watermark, UI mockups, people, animals, letters, numbers, or readable signs."
+                 },
+                 {
+                     "slug":  "lava-forge-board-texture-sheet",
+                     "category":  "board_textures",
+                     "filename_prefix":  "lava-forge-board-texture-sheet",
+                     "background":  "opaque",
+                     "prompt":  "Create a top-down chess board material source sheet for a Flutter chess game. The image must contain exactly two equal vertical halves: left half is the light-square material, right half is the dark-square material. Theme material: dark basalt and forged stone with restrained ember veining, premium tactile board texture, not busy. Flat orthographic texture only, no perspective, no board grid lines, no pieces, no coordinates, no labels, no text, no watermark. Make both halves tile-friendly, elegant, readable under chess pieces, with low-frequency detail and premium tactile surface quality."
+                 },
+                 {
+                     "slug":  "sakura-garden-background",
+                     "category":  "themes",
+                     "filename_prefix":  "sakura-garden",
+                     "background":  "opaque",
+                     "prompt":  "Create a 16:9 landscape background for a polished Flutter desktop chess game. Scene: a tranquil sakura garden terrace with lantern silhouettes, lacquered wood railings, drifting petals at the edges, and a serene center. Composition: the center 55 percent must be calm, low-contrast, and free of detailed objects so the chess board and right control panel remain readable; place architecture, light, texture, and atmosphere near the edges. Style: premium strategy game key art, painterly but crisp, sophisticated, not cartoonish, not photoreal stock. Palette: soft blossom pink, lacquer red-brown, ivory, dusk plum. Include subtle chess-board geometry in the environment, but no actual chess pieces. Do not include text, logos, watermark, UI mockups, people, animals, letters, numbers, or readable signs."
+                 },
+                 {
+                     "slug":  "sakura-garden-board-texture-sheet",
+                     "category":  "board_textures",
+                     "filename_prefix":  "sakura-garden-board-texture-sheet",
+                     "background":  "opaque",
+                     "prompt":  "Create a top-down chess board material source sheet for a Flutter chess game. The image must contain exactly two equal vertical halves: left half is the light-square material, right half is the dark-square material. Theme material: lacquered wood with soft cherry blossom color influence, subtle grain, smooth premium game-board surface. Flat orthographic texture only, no perspective, no board grid lines, no pieces, no coordinates, no labels, no text, no watermark. Make both halves tile-friendly, elegant, readable under chess pieces, with low-frequency detail and premium tactile surface quality."
+                 },
+                 {
+                     "slug":  "neon-city-background",
+                     "category":  "themes",
+                     "filename_prefix":  "neon-city",
+                     "background":  "opaque",
+                     "prompt":  "Create a 16:9 landscape background for a polished Flutter desktop chess game. Scene: a rainy neon rooftop chess setting with distant skyline shapes, wet reflective surfaces, cyan-magenta edge light, and a subdued center. Composition: the center 55 percent must be calm, low-contrast, and free of detailed objects so the chess board and right control panel remain readable; place architecture, light, texture, and atmosphere near the edges. Style: premium strategy game key art, painterly but crisp, sophisticated, not cartoonish, not photoreal stock. Palette: cyan neon, magenta accent, wet charcoal, deep violet. Include subtle chess-board geometry in the environment, but no actual chess pieces. Do not include text, logos, watermark, UI mockups, people, animals, letters, numbers, or readable signs."
+                 },
+                 {
+                     "slug":  "neon-city-board-texture-sheet",
+                     "category":  "board_textures",
+                     "filename_prefix":  "neon-city-board-texture-sheet",
+                     "background":  "opaque",
+                     "prompt":  "Create a top-down chess board material source sheet for a Flutter chess game. The image must contain exactly two equal vertical halves: left half is the light-square material, right half is the dark-square material. Theme material: dark wet composite surface with subtle cyan-magenta circuitry accents, low-glare and readable. Flat orthographic texture only, no perspective, no board grid lines, no pieces, no coordinates, no labels, no text, no watermark. Make both halves tile-friendly, elegant, readable under chess pieces, with low-frequency detail and premium tactile surface quality."
+                 },
+                 {
+                     "slug":  "royal-marble-background",
+                     "category":  "themes",
+                     "filename_prefix":  "royal-marble",
+                     "background":  "opaque",
+                     "prompt":  "Create a 16:9 landscape background for a polished Flutter desktop chess game. Scene: a royal marble palace chess gallery with refined columns, gold trim at the edges, soft daylight, and a calm central floor. Composition: the center 55 percent must be calm, low-contrast, and free of detailed objects so the chess board and right control panel remain readable; place architecture, light, texture, and atmosphere near the edges. Style: premium strategy game key art, painterly but crisp, sophisticated, not cartoonish, not photoreal stock. Palette: ivory marble, charcoal vein, muted gold, warm daylight. Include subtle chess-board geometry in the environment, but no actual chess pieces. Do not include text, logos, watermark, UI mockups, people, animals, letters, numbers, or readable signs."
+                 },
+                 {
+                     "slug":  "royal-marble-board-texture-sheet",
+                     "category":  "board_textures",
+                     "filename_prefix":  "royal-marble-board-texture-sheet",
+                     "background":  "opaque",
+                     "prompt":  "Create a top-down chess board material source sheet for a Flutter chess game. The image must contain exactly two equal vertical halves: left half is the light-square material, right half is the dark-square material. Theme material: ivory marble and charcoal veined stone with restrained gold mineral influence, refined and legible. Flat orthographic texture only, no perspective, no board grid lines, no pieces, no coordinates, no labels, no text, no watermark. Make both halves tile-friendly, elegant, readable under chess pieces, with low-frequency detail and premium tactile surface quality."
+                 },
+                 {
+                     "slug":  "autumn-academy-background",
+                     "category":  "themes",
+                     "filename_prefix":  "autumn-academy",
+                     "background":  "opaque",
+                     "prompt":  "Create a 16:9 landscape background for a polished Flutter desktop chess game. Scene: an old academy courtyard in autumn with stone arches, brass lamps, fallen maple leaves near the edges, and a quiet central play space. Composition: the center 55 percent must be calm, low-contrast, and free of detailed objects so the chess board and right control panel remain readable; place architecture, light, texture, and atmosphere near the edges. Style: premium strategy game key art, painterly but crisp, sophisticated, not cartoonish, not photoreal stock. Palette: autumn amber, aged stone, muted brass, academic brown. Include subtle chess-board geometry in the environment, but no actual chess pieces. Do not include text, logos, watermark, UI mockups, people, animals, letters, numbers, or readable signs."
+                 },
+                 {
+                     "slug":  "autumn-academy-board-texture-sheet",
+                     "category":  "board_textures",
+                     "filename_prefix":  "autumn-academy-board-texture-sheet",
+                     "background":  "opaque",
+                     "prompt":  "Create a top-down chess board material source sheet for a Flutter chess game. The image must contain exactly two equal vertical halves: left half is the light-square material, right half is the dark-square material. Theme material: polished academy stone and aged wood with restrained brass warmth, subtle leaf-toned variation. Flat orthographic texture only, no perspective, no board grid lines, no pieces, no coordinates, no labels, no text, no watermark. Make both halves tile-friendly, elegant, readable under chess pieces, with low-frequency detail and premium tactile surface quality."
+                 },
+                 {
+                     "slug":  "crystal-cavern-background",
+                     "category":  "themes",
+                     "filename_prefix":  "crystal-cavern",
+                     "background":  "opaque",
+                     "prompt":  "Create a 16:9 landscape background for a polished Flutter desktop chess game. Scene: a luminous crystal cavern chess chamber with faceted mineral formations at the edges, cool glow, and a calm central platform. Composition: the center 55 percent must be calm, low-contrast, and free of detailed objects so the chess board and right control panel remain readable; place architecture, light, texture, and atmosphere near the edges. Style: premium strategy game key art, painterly but crisp, sophisticated, not cartoonish, not photoreal stock. Palette: cool cyan, violet crystal, mineral white, deep cavern blue. Include subtle chess-board geometry in the environment, but no actual chess pieces. Do not include text, logos, watermark, UI mockups, people, animals, letters, numbers, or readable signs."
+                 },
+                 {
+                     "slug":  "crystal-cavern-board-texture-sheet",
+                     "category":  "board_textures",
+                     "filename_prefix":  "crystal-cavern-board-texture-sheet",
+                     "background":  "opaque",
+                     "prompt":  "Create a top-down chess board material source sheet for a Flutter chess game. The image must contain exactly two equal vertical halves: left half is the light-square material, right half is the dark-square material. Theme material: luminous mineral stone and faceted crystal tones, controlled contrast, readable premium board texture. Flat orthographic texture only, no perspective, no board grid lines, no pieces, no coordinates, no labels, no text, no watermark. Make both halves tile-friendly, elegant, readable under chess pieces, with low-frequency detail and premium tactile surface quality."
+                 },
+                 {
+                     "slug":  "sky-citadel-background",
+                     "category":  "themes",
+                     "filename_prefix":  "sky-citadel",
+                     "background":  "opaque",
+                     "prompt":  "Create a 16:9 landscape background for a polished Flutter desktop chess game. Scene: a floating sky citadel chess platform above clouds, pale stone railings, sunrise edge light, and a clear quiet center. Composition: the center 55 percent must be calm, low-contrast, and free of detailed objects so the chess board and right control panel remain readable; place architecture, light, texture, and atmosphere near the edges. Style: premium strategy game key art, painterly but crisp, sophisticated, not cartoonish, not photoreal stock. Palette: cloud white, pale sky blue, warm sunrise gold, soft stone gray. Include subtle chess-board geometry in the environment, but no actual chess pieces. Do not include text, logos, watermark, UI mockups, people, animals, letters, numbers, or readable signs."
+                 },
+                 {
+                     "slug":  "sky-citadel-board-texture-sheet",
+                     "category":  "board_textures",
+                     "filename_prefix":  "sky-citadel-board-texture-sheet",
+                     "background":  "opaque",
+                     "prompt":  "Create a top-down chess board material source sheet for a Flutter chess game. The image must contain exactly two equal vertical halves: left half is the light-square material, right half is the dark-square material. Theme material: pale cloud-worn stone with warm gilded accents, airy but grounded, clean square readability. Flat orthographic texture only, no perspective, no board grid lines, no pieces, no coordinates, no labels, no text, no watermark. Make both halves tile-friendly, elegant, readable under chess pieces, with low-frequency detail and premium tactile surface quality."
+                 }
+             ]
+}

@@ -438,6 +438,7 @@ enum TauntLevel {
 enum LlmProviderKind {
   openAiCompatible,
   googleGemini,
+  kimiCode,
   anthropicClaude,
   customCompatible;
 
@@ -445,12 +446,14 @@ enum LlmProviderKind {
     AppLocale.en => switch (this) {
       LlmProviderKind.openAiCompatible => 'OpenAI Compatible',
       LlmProviderKind.googleGemini => 'Google Gemini',
+      LlmProviderKind.kimiCode => 'Kimi Code',
       LlmProviderKind.anthropicClaude => 'Anthropic Claude',
       LlmProviderKind.customCompatible => 'Custom Compatible',
     },
     AppLocale.zhHant => switch (this) {
       LlmProviderKind.openAiCompatible => 'OpenAI 相容',
       LlmProviderKind.googleGemini => 'Google Gemini',
+      LlmProviderKind.kimiCode => 'Kimi Code',
       LlmProviderKind.anthropicClaude => 'Anthropic Claude',
       LlmProviderKind.customCompatible => '自訂相容服務',
     },
@@ -462,6 +465,8 @@ enum LlmProviderKind {
         'Use OpenAI-compatible chat and model endpoints.',
       LlmProviderKind.googleGemini =>
         'Gemini through Google\'s OpenAI-compatible endpoint preset.',
+      LlmProviderKind.kimiCode =>
+        'Kimi coding model through Moonshot AI\'s OpenAI-compatible endpoint.',
       LlmProviderKind.anthropicClaude =>
         'Claude through Anthropic\'s native models and messages APIs.',
       LlmProviderKind.customCompatible =>
@@ -470,6 +475,7 @@ enum LlmProviderKind {
     AppLocale.zhHant => switch (this) {
       LlmProviderKind.openAiCompatible => '使用 OpenAI 相容的聊天與模型端點。',
       LlmProviderKind.googleGemini => '使用 Google 官方 Gemini OpenAI 相容端點預設。',
+      LlmProviderKind.kimiCode => '使用 Moonshot AI Kimi Code 的 OpenAI 相容端點預設。',
       LlmProviderKind.anthropicClaude =>
         '使用 Anthropic 官方 Claude models 與 messages API。',
       LlmProviderKind.customCompatible => '自訂相容服務，可手動填寫服務名稱與 Base URL。',
@@ -479,6 +485,7 @@ enum LlmProviderKind {
   String get defaultProviderLabel => switch (this) {
     LlmProviderKind.openAiCompatible => 'OpenAI Compatible',
     LlmProviderKind.googleGemini => 'Google Gemini',
+    LlmProviderKind.kimiCode => 'Kimi Code',
     LlmProviderKind.anthropicClaude => 'Anthropic Claude',
     LlmProviderKind.customCompatible => 'Custom Gateway',
   };
@@ -487,6 +494,7 @@ enum LlmProviderKind {
     LlmProviderKind.openAiCompatible => 'https://api.openai.com/v1',
     LlmProviderKind.googleGemini =>
       'https://generativelanguage.googleapis.com/v1beta/openai',
+    LlmProviderKind.kimiCode => 'https://api.kimi.com/coding/v1',
     LlmProviderKind.anthropicClaude => 'https://api.anthropic.com/v1',
     LlmProviderKind.customCompatible => 'https://api.openai.com/v1',
   };
@@ -494,6 +502,7 @@ enum LlmProviderKind {
   String get defaultModel => switch (this) {
     LlmProviderKind.openAiCompatible => 'gpt-5.5',
     LlmProviderKind.googleGemini => 'gemini-2.5-flash',
+    LlmProviderKind.kimiCode => 'kimi-for-coding',
     LlmProviderKind.anthropicClaude => 'claude-sonnet-4-0',
     LlmProviderKind.customCompatible => 'gpt-5.5',
   };
@@ -501,6 +510,7 @@ enum LlmProviderKind {
   String get apiKeyHint => switch (this) {
     LlmProviderKind.openAiCompatible => 'OPENAI_API_KEY',
     LlmProviderKind.googleGemini => 'GEMINI_API_KEY',
+    LlmProviderKind.kimiCode => 'KIMI_API_KEY',
     LlmProviderKind.anthropicClaude => 'ANTHROPIC_API_KEY',
     LlmProviderKind.customCompatible => 'YOUR_PROVIDER_API_KEY',
   };
@@ -525,6 +535,12 @@ enum LlmProviderKind {
     final baseUrl = savedBaseUrl is String ? savedBaseUrl.toLowerCase() : '';
     if (provider.contains('gemini') || baseUrl.contains('generativelanguage')) {
       return LlmProviderKind.googleGemini;
+    }
+    if (provider.contains('kimi') ||
+        provider.contains('moonshot') ||
+        baseUrl.contains('api.kimi.com') ||
+        baseUrl.contains('moonshot')) {
+      return LlmProviderKind.kimiCode;
     }
     if (provider.contains('claude') ||
         provider.contains('anthropic') ||
@@ -663,6 +679,7 @@ class GameSessionConfig {
     required this.timeControl,
     required this.boardTheme,
     required this.locale,
+    required this.botProfileName,
     required this.persona,
     required this.coachPersona,
     required this.tauntLevel,
@@ -682,6 +699,7 @@ class GameSessionConfig {
       timeControl: TimeControl.unlimited,
       boardTheme: BoardThemeId.classicWood,
       locale: AppLocale.en,
+      botProfileName: 'Vanta',
       persona: Persona.trashTalker,
       coachPersona: CoachPersona.kirinKing,
       tauntLevel: TauntLevel.light,
@@ -704,6 +722,7 @@ class GameSessionConfig {
   final TimeControl timeControl;
   final BoardThemeId boardTheme;
   final AppLocale locale;
+  final String botProfileName;
   final Persona persona;
   final CoachPersona coachPersona;
   final TauntLevel tauntLevel;
@@ -721,6 +740,7 @@ class GameSessionConfig {
     TimeControl? timeControl,
     BoardThemeId? boardTheme,
     AppLocale? locale,
+    String? botProfileName,
     Persona? persona,
     CoachPersona? coachPersona,
     TauntLevel? tauntLevel,
@@ -738,6 +758,7 @@ class GameSessionConfig {
       timeControl: timeControl ?? this.timeControl,
       boardTheme: boardTheme ?? this.boardTheme,
       locale: locale ?? this.locale,
+      botProfileName: botProfileName ?? this.botProfileName,
       persona: persona ?? this.persona,
       coachPersona: coachPersona ?? this.coachPersona,
       tauntLevel: tauntLevel ?? this.tauntLevel,
@@ -792,6 +813,10 @@ class GameSessionConfig {
         defaults.boardTheme,
       ),
       locale: _enumByName(AppLocale.values, json['locale'], defaults.locale),
+      botProfileName: switch (json['botProfileName']) {
+        final String value when value.trim().isNotEmpty => value,
+        _ => defaults.botProfileName,
+      },
       persona: _enumByName(Persona.values, json['persona'], defaults.persona),
       coachPersona: _enumByName(
         CoachPersona.values,
@@ -833,6 +858,7 @@ class GameSessionConfig {
       'timeControl': timeControl.name,
       'boardTheme': boardTheme.name,
       'locale': locale.name,
+      'botProfileName': botProfileName,
       'persona': persona.name,
       'coachPersona': coachPersona.name,
       'tauntLevel': tauntLevel.name,

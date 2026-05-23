@@ -373,6 +373,8 @@ void main() {
       stockfish.completeNextHardware(_hardwareProfile());
       await controller.startNewGame(
         config: GameSessionConfig.defaults().copyWith(
+          botProfileName: 'Queen Malva',
+          persona: Persona.gentleman,
           hintMode: HintMode.off,
           llm: const LlmSettings(enabled: false, model: 'test-model'),
         ),
@@ -390,6 +392,18 @@ void main() {
       expect(llm.completionRequests.length, greaterThanOrEqualTo(4));
       final preMoveStats = pendingState.llmStats;
       expect(llm.inFlightCompletionCount, greaterThanOrEqualTo(2));
+      expect(
+        llm.completionRequests
+            .map((request) => request.systemPrompt)
+            .where((prompt) => prompt.contains('Opponent role: Queen Malva')),
+        isNotEmpty,
+      );
+      expect(
+        llm.completionRequests
+            .map((request) => request.systemPrompt)
+            .where((prompt) => prompt.contains('Personality: respectful')),
+        isNotEmpty,
+      );
 
       llm.completeLatestCompletions([
         'Opponent sees central pressure.',
@@ -408,6 +422,72 @@ void main() {
       expect(container.read(gameControllerProvider).llmStats.requestCount, 0);
     },
   );
+
+  test('LLM partial responses update commentary before completion', () async {
+    final stockfish = _FakeStockfishService();
+    final llm = _FakeLlmCommentaryService();
+    final container = _container(stockfish: stockfish, llm: llm);
+    addTearDown(container.dispose);
+
+    final controller = container.read(gameControllerProvider.notifier);
+    stockfish.completeNextHardware(_hardwareProfile());
+    await controller.startNewGame(
+      config: GameSessionConfig.defaults().copyWith(
+        hintMode: HintMode.off,
+        llm: const LlmSettings(enabled: true, model: 'test-model'),
+      ),
+    );
+
+    final move = controller.dropMove(Square.e2, Square.e4);
+    await Future<void>.delayed(Duration.zero);
+    stockfish.completeNextAnalysis(multiPv: 1, bestMove: 'e7e5');
+    await move;
+    await Future<void>.delayed(Duration.zero);
+
+    llm.emitLatestPendingPartial('Streaming opponent line', indexFromEnd: 1);
+    await Future<void>.delayed(Duration.zero);
+
+    final partialState = container.read(gameControllerProvider);
+    expect(partialState.opponentMessage, 'Streaming opponent line');
+    expect(partialState.llmStats.requestCount, 0);
+
+    llm.completeLatestCompletions([
+      'Streaming opponent line done.',
+      'Teacher final line.',
+    ]);
+    await Future<void>.delayed(Duration.zero);
+
+    final finalState = container.read(gameControllerProvider);
+    expect(finalState.opponentMessage, 'Streaming opponent line done.');
+    expect(finalState.llmStats.requestCount, greaterThanOrEqualTo(2));
+  });
+
+  test('Traditional Chinese LLM pending lines are readable', () async {
+    final stockfish = _FakeStockfishService();
+    final llm = _FakeLlmCommentaryService();
+    final container = _container(stockfish: stockfish, llm: llm);
+    addTearDown(container.dispose);
+
+    final controller = container.read(gameControllerProvider.notifier);
+    stockfish.completeNextHardware(_hardwareProfile());
+    await controller.startNewGame(
+      config: GameSessionConfig.defaults().copyWith(
+        locale: AppLocale.zhHant,
+        hintMode: HintMode.off,
+        llm: const LlmSettings(enabled: true, model: 'test-model'),
+      ),
+    );
+
+    final move = controller.dropMove(Square.e2, Square.e4);
+    await Future<void>.delayed(Duration.zero);
+    stockfish.completeNextAnalysis(multiPv: 1, bestMove: 'e7e5');
+    await move;
+    await Future<void>.delayed(Duration.zero);
+
+    final state = container.read(gameControllerProvider);
+    expect(state.opponentMessage, '正在組織語氣...');
+    expect(state.coachMessage, '正在讀局面...');
+  });
 
   test(
     'idle banter settings update LLM config without starting a new game',
@@ -442,6 +522,33 @@ void main() {
     expect(settings.idleBanterEnabled, isTrue);
     expect(settings.idleBanterMinSeconds, 10);
     expect(settings.idleBanterMaxSeconds, 45);
+  });
+
+  test('Kimi Code provider preset applies coding endpoint defaults', () {
+    final container = _container();
+    addTearDown(container.dispose);
+
+    final controller = container.read(gameControllerProvider.notifier);
+    controller.updateLlmProviderKind(LlmProviderKind.kimiCode);
+
+    final llm = container.read(gameControllerProvider).config.llm;
+    expect(llm.providerKind, LlmProviderKind.kimiCode);
+    expect(llm.provider, 'Kimi Code');
+    expect(llm.baseUrl, 'https://api.kimi.com/coding/v1');
+    expect(llm.model, 'kimi-for-coding');
+    expect(llm.providerKind.apiKeyHint, 'KIMI_API_KEY');
+  });
+
+  test('stored Kimi-compatible settings infer the Kimi Code preset', () {
+    final settings = LlmSettings.fromJson({
+      'enabled': true,
+      'provider': 'Moonshot Kimi',
+      'baseUrl': 'https://api.kimi.com/coding/v1',
+      'model': 'kimi-for-coding',
+      'apiKey': 'secret-token',
+    });
+
+    expect(settings.providerKind, LlmProviderKind.kimiCode);
   });
 
   test('status text warns when player is in check', () async {
@@ -643,14 +750,24 @@ class _FakeLlmCommentaryService extends LlmCommentaryService {
     required LlmSettings settings,
     required String systemPrompt,
     required String userPrompt,
+    void Function(String partialText)? onPartial,
   }) {
     final request = _CompletionRequest(
       settings: settings,
       systemPrompt: systemPrompt,
       userPrompt: userPrompt,
+      onPartial: onPartial,
     );
     completionRequests.add(request);
     return request.completer.future;
+  }
+
+  void emitLatestPendingPartial(String text, {int indexFromEnd = 0}) {
+    final pending = completionRequests
+        .where((request) => !request.completer.isCompleted)
+        .toList(growable: false);
+    final request = pending[pending.length - 1 - indexFromEnd];
+    request.onPartial?.call(text);
   }
 
   void completeNextCompletion(String text) {
@@ -715,11 +832,13 @@ class _CompletionRequest {
     required this.settings,
     required this.systemPrompt,
     required this.userPrompt,
+    required this.onPartial,
   });
 
   final LlmSettings settings;
   final String systemPrompt;
   final String userPrompt;
+  final void Function(String partialText)? onPartial;
   final Completer<LlmCompletionResult> completer =
       Completer<LlmCompletionResult>();
 }

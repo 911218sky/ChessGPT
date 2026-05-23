@@ -162,10 +162,7 @@ class ChessHomePage extends ConsumerStatefulWidget {
 }
 
 class _ChessHomePageState extends ConsumerState<ChessHomePage> {
-  Future<void> _openAiPanelDialog(
-    GameState state,
-    GameController controller,
-  ) async {
+  Future<void> _openAiPanelDialog() async {
     await showDialog<void>(
       context: context,
       barrierColor: Colors.black.withValues(alpha: 0.72),
@@ -189,45 +186,57 @@ class _ChessHomePageState extends ConsumerState<ChessHomePage> {
               maxWidth: panelWidth,
               maxHeight: panelHeight,
             ),
-            child: ControlPanel(
-              state: state,
-              onDifficultyChanged: controller.updateDifficulty,
-              onOpponentDepthChanged: controller.updateOpponentDepth,
-              onTeacherDepthChanged: controller.updateTeacherDepth,
-              onEngineResourcesChanged: controller.updateEngineResources,
-              onTimeControlChanged: controller.updateTimeControl,
-              onPlayerSideChanged: controller.updatePlayerSide,
-              onHintModeChanged: controller.updateHintMode,
-              onCandidateLineCountChanged: controller.updateCandidateLineCount,
-              onAppTextScalePercentChanged:
-                  controller.updateAppTextScalePercent,
-              onOpenAiPanelPressed: () => Navigator.of(dialogContext).pop(),
-              onBoardThemeChanged: controller.updateBoardTheme,
-              onLocaleChanged: controller.updateLocale,
-              onPersonaChanged: controller.updatePersona,
-              onCoachPersonaChanged: controller.updateCoachPersona,
-              onTauntLevelChanged: controller.updateTauntLevel,
-              onUndoPressed: controller.undoTurn,
-              onRedoPressed: controller.redoTurn,
-              onNewGamePressed: controller.startNewGame,
-              onRematchPressed: controller.rematch,
-              onLlmEnabledChanged: controller.updateLlmEnabled,
-              onLlmProviderKindChanged: controller.updateLlmProviderKind,
-              onLlmProviderChanged: controller.updateLlmProvider,
-              onLlmBaseUrlChanged: controller.updateLlmBaseUrl,
-              onLlmModelChanged: controller.updateLlmModel,
-              onLlmApiKeyChanged: controller.updateLlmApiKey,
-              onLlmIdleBanterEnabledChanged:
-                  controller.updateLlmIdleBanterEnabled,
-              onLlmIdleBanterMinSecondsChanged:
-                  controller.updateLlmIdleBanterMinSeconds,
-              onLlmIdleBanterMaxSecondsChanged:
-                  controller.updateLlmIdleBanterMaxSeconds,
-              onResetLlmStatsPressed: controller.resetLlmUsageStats,
-              onTestLlmPressed: controller.testLlmConnection,
-              onFetchLlmModelsPressed: controller.fetchLlmModels,
-              onResetLlmPressed: controller.resetLlmSettings,
-              onResetPreferencesPressed: controller.resetPreferences,
+            child: Consumer(
+              builder: (context, ref, _) {
+                final state = ref.watch(
+                  gameControllerProvider.select(
+                    ControlPanelViewState.fromGameState,
+                  ),
+                );
+                final controller = ref.read(gameControllerProvider.notifier);
+
+                return ControlPanel(
+                  state: state.toGameState(),
+                  onDifficultyChanged: controller.updateDifficulty,
+                  onOpponentDepthChanged: controller.updateOpponentDepth,
+                  onTeacherDepthChanged: controller.updateTeacherDepth,
+                  onEngineResourcesChanged: controller.updateEngineResources,
+                  onTimeControlChanged: controller.updateTimeControl,
+                  onPlayerSideChanged: controller.updatePlayerSide,
+                  onHintModeChanged: controller.updateHintMode,
+                  onCandidateLineCountChanged:
+                      controller.updateCandidateLineCount,
+                  onAppTextScalePercentChanged:
+                      controller.updateAppTextScalePercent,
+                  onOpenAiPanelPressed: () => Navigator.of(dialogContext).pop(),
+                  onBoardThemeChanged: controller.updateBoardTheme,
+                  onLocaleChanged: controller.updateLocale,
+                  onPersonaChanged: controller.updatePersona,
+                  onCoachPersonaChanged: controller.updateCoachPersona,
+                  onTauntLevelChanged: controller.updateTauntLevel,
+                  onUndoPressed: controller.undoTurn,
+                  onRedoPressed: controller.redoTurn,
+                  onNewGamePressed: controller.startNewGame,
+                  onRematchPressed: controller.rematch,
+                  onLlmEnabledChanged: controller.updateLlmEnabled,
+                  onLlmProviderKindChanged: controller.updateLlmProviderKind,
+                  onLlmProviderChanged: controller.updateLlmProvider,
+                  onLlmBaseUrlChanged: controller.updateLlmBaseUrl,
+                  onLlmModelChanged: controller.updateLlmModel,
+                  onLlmApiKeyChanged: controller.updateLlmApiKey,
+                  onLlmIdleBanterEnabledChanged:
+                      controller.updateLlmIdleBanterEnabled,
+                  onLlmIdleBanterMinSecondsChanged:
+                      controller.updateLlmIdleBanterMinSeconds,
+                  onLlmIdleBanterMaxSecondsChanged:
+                      controller.updateLlmIdleBanterMaxSeconds,
+                  onResetLlmStatsPressed: controller.resetLlmUsageStats,
+                  onTestLlmPressed: controller.testLlmConnection,
+                  onFetchLlmModelsPressed: controller.fetchLlmModels,
+                  onResetLlmPressed: controller.resetLlmSettings,
+                  onResetPreferencesPressed: controller.resetPreferences,
+                );
+              },
             ),
           ),
         );
@@ -247,7 +256,10 @@ class _ChessHomePageState extends ConsumerState<ChessHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final isWide = MediaQuery.sizeOf(context).width >= 1320;
+    final viewport = MediaQuery.sizeOf(context);
+    final isWide = viewport.width >= 1180;
+    final stackedBoardFlex = viewport.height < 860 ? 8 : 7;
+    final stackedPanelFlex = viewport.height < 860 ? 5 : 6;
 
     return Scaffold(
       body: DecoratedBox(
@@ -291,13 +303,13 @@ class _ChessHomePageState extends ConsumerState<ChessHomePage> {
                               children: [
                                 const _TopBar(),
                                 const SizedBox(height: 8),
-                                const Expanded(
-                                  flex: 7,
+                                Expanded(
+                                  flex: stackedBoardFlex,
                                   child: _BoardConnector(),
                                 ),
                                 const SizedBox(height: 16),
                                 Expanded(
-                                  flex: 6,
+                                  flex: stackedPanelFlex,
                                   child: _ControlPanelConnector(
                                     onOpenAiPanelPressed:
                                         _openAiPanelDialogFromCurrentState,
@@ -317,10 +329,7 @@ class _ChessHomePageState extends ConsumerState<ChessHomePage> {
   }
 
   Future<void> _openAiPanelDialogFromCurrentState() {
-    return _openAiPanelDialog(
-      ref.read(gameControllerProvider),
-      ref.read(gameControllerProvider.notifier),
-    );
+    return _openAiPanelDialog();
   }
 }
 
@@ -405,6 +414,7 @@ class _ArenaBackdrop extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = boardThemeStyle(themeId);
+    final spec = theme.backdropSpec;
 
     return Stack(
       children: [
@@ -441,6 +451,59 @@ class _ArenaBackdrop extends StatelessWidget {
             ),
           ),
         ),
+        if (spec.edgeGlowColor != null)
+          Positioned.fill(
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                  colors: [
+                    spec.edgeGlowColor!.withValues(alpha: spec.edgeGlowOpacity),
+                    Colors.transparent,
+                    Colors.transparent,
+                    spec.edgeGlowColor!.withValues(
+                      alpha: spec.edgeGlowOpacity * 0.78,
+                    ),
+                  ],
+                  stops: const [0.0, 0.18, 0.82, 1.0],
+                ),
+              ),
+            ),
+          ),
+        if (spec.mistColor != null)
+          Positioned.fill(
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: RadialGradient(
+                  center: const Alignment(0, 0.22),
+                  radius: 1.0,
+                  colors: [
+                    Colors.transparent,
+                    spec.mistColor!.withValues(alpha: spec.mistOpacity),
+                  ],
+                  stops: const [0.38, 1.0],
+                ),
+              ),
+            ),
+          ),
+        if (theme.leftBannerAsset != null)
+          _BackdropBanner(
+            alignment: Alignment.centerLeft,
+            assetPath: theme.leftBannerAsset!,
+            opacity: theme.bannerOpacity,
+            mirror: false,
+          ),
+        if (theme.rightBannerAsset != null)
+          _BackdropBanner(
+            alignment: Alignment.centerRight,
+            assetPath: theme.rightBannerAsset!,
+            opacity: theme.bannerOpacity,
+            mirror: true,
+          ),
+        ...spec.ornaments.map(
+          (ornament) => _BackdropOrnament(ornament: ornament),
+        ),
         Positioned.fill(
           child: DecoratedBox(
             decoration: BoxDecoration(
@@ -455,38 +518,376 @@ class _ArenaBackdrop extends StatelessWidget {
             ),
           ),
         ),
-        Positioned(
-          left: -120,
-          top: 64,
-          child: Transform.rotate(
-            angle: -0.12,
-            child: Container(
-              width: 520,
-              height: 180,
-              decoration: BoxDecoration(
-                color: theme.backdropAccent.withValues(alpha: 0.10),
-                borderRadius: BorderRadius.circular(24),
-              ),
-            ),
-          ),
-        ),
-        Positioned(
-          right: -70,
-          bottom: 110,
-          child: Transform.rotate(
-            angle: 0.08,
-            child: Container(
-              width: 420,
-              height: 160,
-              decoration: BoxDecoration(
-                color: theme.panelTint.withValues(alpha: 0.34),
-                borderRadius: BorderRadius.circular(24),
+        Positioned.fill(
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              gradient: RadialGradient(
+                center: const Alignment(0.02, 0.10),
+                radius: 1.28,
+                colors: [
+                  Colors.transparent,
+                  theme.backdropShadow.withValues(alpha: spec.vignetteOpacity),
+                ],
+                stops: const [0.46, 1.0],
               ),
             ),
           ),
         ),
       ],
     );
+  }
+}
+
+class _BackdropBanner extends StatelessWidget {
+  const _BackdropBanner({
+    required this.alignment,
+    required this.assetPath,
+    required this.opacity,
+    required this.mirror,
+  });
+
+  final Alignment alignment;
+  final String assetPath;
+  final double opacity;
+  final bool mirror;
+
+  @override
+  Widget build(BuildContext context) {
+    return IgnorePointer(
+      child: Align(
+        alignment: alignment,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+          child: Transform(
+            alignment: Alignment.center,
+            transform: Matrix4.diagonal3Values(mirror ? -1 : 1, 1, 1),
+            child: FractionallySizedBox(
+              widthFactor: 0.24,
+              heightFactor: 0.70,
+              alignment: alignment,
+              child: Image.asset(
+                assetPath,
+                fit: BoxFit.contain,
+                opacity: AlwaysStoppedAnimation(opacity),
+                filterQuality: FilterQuality.high,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _BackdropOrnament extends StatelessWidget {
+  const _BackdropOrnament({required this.ornament});
+
+  final BoardThemeBackdropOrnament ornament;
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: ornament.alignment,
+      child: Padding(
+        padding: const EdgeInsets.all(28),
+        child: Transform.rotate(
+          angle: ornament.rotation,
+          child: Opacity(
+            opacity: ornament.opacity,
+            child: SizedBox(
+              width: ornament.size.width,
+              height: ornament.size.height,
+              child: CustomPaint(
+                painter: _BackdropOrnamentPainter(ornament: ornament),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _BackdropOrnamentPainter extends CustomPainter {
+  const _BackdropOrnamentPainter({required this.ornament});
+
+  final BoardThemeBackdropOrnament ornament;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final shadow = Paint()
+      ..color = Colors.black.withValues(alpha: ornament.opacity * 0.34)
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 18);
+    final fill = Paint()
+      ..shader = LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [
+          ornament.color.withValues(alpha: 0.95),
+          ornament.color.withValues(alpha: 0.68),
+        ],
+      ).createShader(Offset.zero & size)
+      ..style = PaintingStyle.fill;
+    final stroke = Paint()
+      ..color = ornament.color.withValues(alpha: 0.86)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = math.max(1.5, size.shortestSide * 0.018);
+    final highlight = Paint()
+      ..color = Colors.white.withValues(alpha: ornament.opacity * 0.28)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = math.max(1.0, size.shortestSide * 0.010);
+
+    switch (ornament.kind) {
+      case BoardThemeBackdropOrnamentKind.banner:
+        _paintBanner(canvas, size, shadow, fill, stroke, highlight);
+      case BoardThemeBackdropOrnamentKind.pillar:
+        _paintPillar(canvas, size, shadow, fill, highlight);
+      case BoardThemeBackdropOrnamentKind.plume:
+        _paintPlume(canvas, size, shadow, fill, highlight);
+      case BoardThemeBackdropOrnamentKind.sigil:
+        _paintSigil(canvas, size, shadow, stroke, highlight);
+      case BoardThemeBackdropOrnamentKind.arch:
+        _paintArch(canvas, size, shadow, fill, stroke, highlight);
+      case BoardThemeBackdropOrnamentKind.crystal:
+        _paintCrystal(canvas, size, shadow, fill, stroke, highlight);
+      case BoardThemeBackdropOrnamentKind.lantern:
+        _paintLantern(canvas, size, shadow, fill, stroke, highlight);
+    }
+  }
+
+  void _paintBanner(
+    Canvas canvas,
+    Size size,
+    Paint shadow,
+    Paint fill,
+    Paint stroke,
+    Paint highlight,
+  ) {
+    final path = Path()
+      ..moveTo(size.width * 0.18, size.height * 0.10)
+      ..lineTo(size.width * 0.82, size.height * 0.08)
+      ..lineTo(size.width * 0.76, size.height * 0.74)
+      ..lineTo(size.width * 0.50, size.height * 0.92)
+      ..lineTo(size.width * 0.24, size.height * 0.74)
+      ..close();
+    canvas.drawPath(path.shift(const Offset(8, 10)), shadow);
+    canvas.drawPath(path, fill);
+    canvas.drawPath(path, stroke);
+    canvas.drawLine(
+      Offset(size.width * 0.30, size.height * 0.18),
+      Offset(size.width * 0.70, size.height * 0.16),
+      highlight,
+    );
+  }
+
+  void _paintPillar(
+    Canvas canvas,
+    Size size,
+    Paint shadow,
+    Paint fill,
+    Paint highlight,
+  ) {
+    final rect = RRect.fromRectAndRadius(
+      Rect.fromLTWH(
+        size.width * 0.32,
+        size.height * 0.06,
+        size.width * 0.36,
+        size.height * 0.88,
+      ),
+      Radius.circular(size.width * 0.08),
+    );
+    final cap = RRect.fromRectAndRadius(
+      Rect.fromLTWH(
+        size.width * 0.20,
+        size.height * 0.02,
+        size.width * 0.60,
+        size.height * 0.14,
+      ),
+      Radius.circular(size.width * 0.06),
+    );
+    canvas.drawRRect(rect.shift(const Offset(8, 10)), shadow);
+    canvas.drawRRect(rect, fill);
+    canvas.drawRRect(cap, fill);
+    canvas.drawLine(
+      Offset(size.width * 0.42, size.height * 0.10),
+      Offset(size.width * 0.42, size.height * 0.88),
+      highlight,
+    );
+  }
+
+  void _paintPlume(
+    Canvas canvas,
+    Size size,
+    Paint shadow,
+    Paint fill,
+    Paint highlight,
+  ) {
+    final path = Path()
+      ..moveTo(size.width * 0.12, size.height * 0.82)
+      ..quadraticBezierTo(
+        size.width * 0.28,
+        size.height * 0.12,
+        size.width * 0.54,
+        size.height * 0.18,
+      )
+      ..quadraticBezierTo(
+        size.width * 0.82,
+        size.height * 0.24,
+        size.width * 0.90,
+        size.height * 0.68,
+      )
+      ..quadraticBezierTo(
+        size.width * 0.66,
+        size.height * 0.54,
+        size.width * 0.48,
+        size.height * 0.86,
+      )
+      ..close();
+    canvas.drawPath(path.shift(const Offset(10, 10)), shadow);
+    canvas.drawPath(path, fill);
+    canvas.drawPath(
+      Path()
+        ..moveTo(size.width * 0.22, size.height * 0.72)
+        ..quadraticBezierTo(
+          size.width * 0.42,
+          size.height * 0.30,
+          size.width * 0.72,
+          size.height * 0.42,
+        ),
+      highlight,
+    );
+  }
+
+  void _paintSigil(
+    Canvas canvas,
+    Size size,
+    Paint shadow,
+    Paint stroke,
+    Paint highlight,
+  ) {
+    final center = Offset(size.width / 2, size.height / 2);
+    final radius = size.shortestSide * 0.32;
+    canvas.drawCircle(center.translate(8, 8), radius, shadow);
+    canvas.drawCircle(center, radius, stroke);
+    canvas.drawCircle(center, radius * 0.56, stroke);
+    for (var i = 0; i < 4; i++) {
+      final angle = math.pi / 4 + (math.pi / 2 * i);
+      final dx = math.cos(angle) * radius;
+      final dy = math.sin(angle) * radius;
+      canvas.drawLine(center, center + Offset(dx, dy), stroke);
+    }
+    canvas.drawCircle(center, radius * 0.78, highlight);
+  }
+
+  void _paintArch(
+    Canvas canvas,
+    Size size,
+    Paint shadow,
+    Paint fill,
+    Paint stroke,
+    Paint highlight,
+  ) {
+    final rect = Rect.fromLTWH(
+      size.width * 0.18,
+      size.height * 0.08,
+      size.width * 0.64,
+      size.height * 0.78,
+    );
+    final path = Path()
+      ..moveTo(rect.left, rect.bottom)
+      ..lineTo(rect.left, rect.top + rect.width * 0.42)
+      ..quadraticBezierTo(
+        rect.center.dx,
+        rect.top - rect.height * 0.16,
+        rect.right,
+        rect.top + rect.width * 0.42,
+      )
+      ..lineTo(rect.right, rect.bottom)
+      ..close();
+    canvas.drawPath(path.shift(const Offset(8, 10)), shadow);
+    canvas.drawPath(path, fill);
+    canvas.drawPath(path, stroke);
+    canvas.drawArc(
+      Rect.fromCircle(
+        center: Offset(rect.center.dx, rect.top + rect.height * 0.34),
+        radius: rect.width * 0.22,
+      ),
+      math.pi,
+      math.pi,
+      false,
+      highlight,
+    );
+  }
+
+  void _paintCrystal(
+    Canvas canvas,
+    Size size,
+    Paint shadow,
+    Paint fill,
+    Paint stroke,
+    Paint highlight,
+  ) {
+    final path = Path()
+      ..moveTo(size.width * 0.50, size.height * 0.04)
+      ..lineTo(size.width * 0.80, size.height * 0.32)
+      ..lineTo(size.width * 0.66, size.height * 0.94)
+      ..lineTo(size.width * 0.28, size.height * 0.80)
+      ..lineTo(size.width * 0.16, size.height * 0.30)
+      ..close();
+    canvas.drawPath(path.shift(const Offset(8, 10)), shadow);
+    canvas.drawPath(path, fill);
+    canvas.drawPath(path, stroke);
+    canvas.drawLine(
+      Offset(size.width * 0.50, size.height * 0.10),
+      Offset(size.width * 0.36, size.height * 0.72),
+      highlight,
+    );
+    canvas.drawLine(
+      Offset(size.width * 0.50, size.height * 0.10),
+      Offset(size.width * 0.66, size.height * 0.76),
+      highlight,
+    );
+  }
+
+  void _paintLantern(
+    Canvas canvas,
+    Size size,
+    Paint shadow,
+    Paint fill,
+    Paint stroke,
+    Paint highlight,
+  ) {
+    final body = RRect.fromRectAndRadius(
+      Rect.fromLTWH(
+        size.width * 0.26,
+        size.height * 0.24,
+        size.width * 0.48,
+        size.height * 0.54,
+      ),
+      Radius.circular(size.width * 0.12),
+    );
+    canvas.drawRRect(body.shift(const Offset(8, 10)), shadow);
+    canvas.drawRRect(body, fill);
+    canvas.drawRRect(body, stroke);
+    canvas.drawRect(
+      Rect.fromLTWH(
+        size.width * 0.46,
+        size.height * 0.06,
+        size.width * 0.08,
+        size.height * 0.18,
+      ),
+      stroke,
+    );
+    canvas.drawLine(
+      Offset(size.width * 0.36, size.height * 0.34),
+      Offset(size.width * 0.64, size.height * 0.34),
+      highlight,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant _BackdropOrnamentPainter oldDelegate) {
+    return oldDelegate.ornament != ornament;
   }
 }
 
@@ -501,6 +902,7 @@ class _TopBar extends StatelessWidget {
 
 class _BoardWorkspace extends StatelessWidget {
   static const double _dialogueRailHeight = 148;
+  static const double _dialogueRailCompactHeight = 112;
   static const double _dialogueRailSpacing = 6;
   static const double _minWorkspaceHeight = 360;
 
@@ -531,28 +933,35 @@ class _BoardWorkspaceBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        const SizedBox(
-          height: _BoardWorkspace._dialogueRailHeight,
-          child: _DialogueConnector(),
-        ),
-        const SizedBox(height: _BoardWorkspace._dialogueRailSpacing),
-        Expanded(
-          child: LayoutBuilder(
-            builder: (context, boardAreaConstraints) {
-              final boardHeightBudget = boardAreaConstraints.maxHeight;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final compactDialogue =
+            constraints.maxHeight < 620 || constraints.maxWidth < 1100;
+        final dialogueHeight = compactDialogue
+            ? _BoardWorkspace._dialogueRailCompactHeight
+            : _BoardWorkspace._dialogueRailHeight;
 
-              return Center(
-                child: _BoardWithClocksConnector(
-                  availableHeight: math.max(120, boardHeightBudget),
-                ),
-              );
-            },
-          ),
-        ),
-      ],
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            SizedBox(height: dialogueHeight, child: const _DialogueConnector()),
+            const SizedBox(height: _BoardWorkspace._dialogueRailSpacing),
+            Expanded(
+              child: LayoutBuilder(
+                builder: (context, boardAreaConstraints) {
+                  final boardHeightBudget = boardAreaConstraints.maxHeight;
+
+                  return Center(
+                    child: _BoardWithClocksConnector(
+                      availableHeight: math.max(120, boardHeightBudget),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

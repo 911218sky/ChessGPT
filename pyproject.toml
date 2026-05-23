@@ -1,0 +1,14 @@
+[project]
+name = "chess-ai-desktop-image-tools"
+version = "0.1.0"
+description = "Batch image generation helpers for chess_ai_desktop assets"
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "openai>=1.107.0",
+  "pillow>=11.2.1",
+  "python-dotenv>=1.0.1",
+]
+
+[tool.uv]
+package = false

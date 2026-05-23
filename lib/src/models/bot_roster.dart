@@ -110,6 +110,13 @@ class BotProfile {
       _ => specialty,
     },
   };
+
+  String promptRole(AppStrings strings) => switch (strings.locale) {
+    AppLocale.en =>
+      'Opponent role: $name, $title. Chess specialty: $specialty. Rating persona target: $rating.',
+    AppLocale.zhHant =>
+      '對手角色：${localizedName(strings)}，${localizedTitle(strings)}。棋風專長：${localizedSpecialty(strings)}。棋力定位：$rating。',
+  };
 }
 
 const botRoster = <BotProfile>[
@@ -248,6 +255,11 @@ const botRoster = <BotProfile>[
 ];
 
 BotProfile profileForConfig(GameSessionConfig config) {
+  final namedProfile = profileByName(config.botProfileName);
+  if (namedProfile != null) {
+    return namedProfile;
+  }
+
   for (final profile in botRoster) {
     if (profile.persona == config.persona &&
         profile.difficulty == config.difficulty) {
@@ -262,6 +274,15 @@ BotProfile profileForConfig(GameSessionConfig config) {
   }
 
   return botRoster.first;
+}
+
+BotProfile? profileByName(String name) {
+  for (final profile in botRoster) {
+    if (profile.name == name) {
+      return profile;
+    }
+  }
+  return null;
 }
 
 List<BotProfile> profilesForPersona(Persona persona) {

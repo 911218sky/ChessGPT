@@ -5,6 +5,7 @@ import 'package:dartchess/dartchess.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../i18n/app_localizations.dart';
+import '../models/bot_roster.dart';
 import '../models/engine_models.dart';
 import '../models/game_state.dart';
 import '../models/session_config.dart';
@@ -1200,11 +1201,47 @@ class GameController extends Notifier<GameState> {
       settings: config.llm,
       systemPrompt: _opponentSystemPrompt(config),
       userPrompt: prompt,
+      onPartial: (partialText) {
+        final safePartial = sanitizeDisplayText(partialText);
+        if (safePartial.isEmpty ||
+            requestId != _llmVoiceRequestId ||
+            !_isCurrentPositionRequest(
+              sessionId: sessionId,
+              fen: fen,
+              config: config,
+            )) {
+          return;
+        }
+        state = state.copyWith(
+          opponentMessage: safePartial,
+          opponentMessageSource: DialogueMessageSource.llm,
+          llmStatusMessage: null,
+          lastLlmError: null,
+        );
+      },
     );
     final coachFuture = _completeLlm(
       settings: config.llm,
       systemPrompt: _coachSystemPrompt(config),
       userPrompt: prompt,
+      onPartial: (partialText) {
+        final safePartial = sanitizeDisplayText(partialText);
+        if (safePartial.isEmpty ||
+            requestId != _llmVoiceRequestId ||
+            !_isCurrentPositionRequest(
+              sessionId: sessionId,
+              fen: fen,
+              config: config,
+            )) {
+          return;
+        }
+        state = state.copyWith(
+          coachMessage: safePartial,
+          coachMessageSource: DialogueMessageSource.llm,
+          llmStatusMessage: null,
+          lastLlmError: null,
+        );
+      },
     );
 
     await Future.wait([
@@ -1301,12 +1338,14 @@ class GameController extends Notifier<GameState> {
     required LlmSettings settings,
     required String systemPrompt,
     required String userPrompt,
+    void Function(String partialText)? onPartial,
   }) async {
     try {
       final result = await _llm.complete(
         settings: settings,
         systemPrompt: systemPrompt,
         userPrompt: userPrompt,
+        onPartial: onPartial,
       );
       final usage = result.usage;
       state = state.copyWith(
@@ -1658,6 +1697,24 @@ class GameController extends Notifier<GameState> {
         settings: config.llm,
         systemPrompt: _opponentSystemPrompt(config),
         userPrompt: prompt,
+        onPartial: (partialText) {
+          final safePartial = sanitizeDisplayText(partialText);
+          if (safePartial.isEmpty ||
+              requestId != _llmVoiceRequestId ||
+              !_isCurrentPositionRequest(
+                sessionId: sessionId,
+                fen: fen,
+                config: config,
+              )) {
+            return;
+          }
+          state = state.copyWith(
+            opponentMessage: safePartial,
+            opponentMessageSource: DialogueMessageSource.llm,
+            llmStatusMessage: null,
+            lastLlmError: null,
+          );
+        },
       );
       final safeOpponent = sanitizeDisplayText(opponent.text);
       if (requestId == _llmVoiceRequestId &&
@@ -1697,6 +1754,24 @@ class GameController extends Notifier<GameState> {
         systemPrompt: _coachSystemPrompt(config),
         userPrompt:
             '$prompt\nGive one concise teacher-style opening focus based on the board and game plan.',
+        onPartial: (partialText) {
+          final safePartial = sanitizeDisplayText(partialText);
+          if (safePartial.isEmpty ||
+              requestId != _llmVoiceRequestId ||
+              !_isCurrentPositionRequest(
+                sessionId: sessionId,
+                fen: fen,
+                config: config,
+              )) {
+            return;
+          }
+          state = state.copyWith(
+            coachMessage: safePartial,
+            coachMessageSource: DialogueMessageSource.llm,
+            llmStatusMessage: null,
+            lastLlmError: null,
+          );
+        },
       );
       final safeCoach = sanitizeDisplayText(coach.text);
       if (requestId == _llmVoiceRequestId &&
@@ -1778,6 +1853,25 @@ class GameController extends Notifier<GameState> {
           analysis: analysis,
           review: state.latestReview,
         ),
+        onPartial: (partialText) {
+          final safePartial = sanitizeDisplayText(partialText);
+          if (safePartial.isEmpty ||
+              requestId != _llmVoiceRequestId ||
+              !_isCurrentPositionRequest(
+                sessionId: sessionId,
+                fen: fen,
+                config: config,
+              ) ||
+              !state.playerTurn) {
+            return;
+          }
+          state = state.copyWith(
+            coachMessage: safePartial,
+            coachMessageSource: DialogueMessageSource.llm,
+            llmStatusMessage: null,
+            lastLlmError: null,
+          );
+        },
       );
       final safeCoach = sanitizeDisplayText(coach.text);
       if (requestId == _llmVoiceRequestId &&
@@ -1866,6 +1960,31 @@ class GameController extends Notifier<GameState> {
             ? _coachSystemPrompt(config)
             : _opponentSystemPrompt(config),
         userPrompt: prompt,
+        onPartial: (partialText) {
+          final safePartial = sanitizeDisplayText(partialText);
+          if (safePartial.isEmpty ||
+              requestId != _llmVoiceRequestId ||
+              !_isCurrentPositionRequest(
+                sessionId: sessionId,
+                fen: fen,
+                config: config,
+              )) {
+            return;
+          }
+          state = speakAsCoach
+              ? state.copyWith(
+                  coachMessage: safePartial,
+                  coachMessageSource: DialogueMessageSource.llm,
+                  llmStatusMessage: null,
+                  lastLlmError: null,
+                )
+              : state.copyWith(
+                  opponentMessage: safePartial,
+                  opponentMessageSource: DialogueMessageSource.llm,
+                  llmStatusMessage: null,
+                  lastLlmError: null,
+                );
+        },
       );
       final safeText = sanitizeDisplayText(result.text);
       if (safeText.isNotEmpty &&
@@ -2082,7 +2201,7 @@ class GameController extends Notifier<GameState> {
         Persona.gentleman => '我的回應是 $bestMove。$checkSuffix'.trim(),
         Persona.trickster => '我走 $bestMove。最明顯的回應可能是誘餌。$checkSuffix'.trim(),
         Persona.speedDemon => '$bestMove，快速直接。$checkSuffix'.trim(),
-        Persona.endgameGrinder => '$bestMove。我會慢慢榨乾細節。$checkSuffix'.trim(),
+        Persona.endgameGrinder => '$bestMove。我會慢慢磨乾細節。$checkSuffix'.trim(),
         Persona.royalVillain => '王令已下：$bestMove。$checkSuffix'.trim(),
       },
     };
@@ -2206,7 +2325,7 @@ class GameController extends Notifier<GameState> {
         'Target under 18 English words or under 22 Chinese characters.\n'
         'You may use light markdown such as **bold** or a tiny bullet list when it improves readability.\n'
         'Output only the spoken line. Do not start with a speaker name, role label, colon prefix, or field label.\n'
-        'Do not repeat template phrases such as "points to", "evaluation", "score", "depth", "best move", "指向", "評估", "分數", "深度", or "最佳".\n'
+        'Do not repeat template phrases such as "points to", "evaluation", "score", "depth", "best move", "指向", "評估", "分數", "深度", or "最佳步".\n'
         'Opponent voice rule: never mention engine analysis, evaluation labels, best-move wording, depth, win rate, or exact UCI notation.\n'
         'Coach voice rule: give practical guidance tied to the current position, and avoid sounding generic.';
   }
@@ -2245,7 +2364,7 @@ class GameController extends Notifier<GameState> {
         'Keep it to one short sentence, or at most two tiny bullet points. Do not dump a full line unless the tactic is forced.\n'
         'Target under 22 English words or under 28 Chinese characters. Light markdown is allowed when it makes the hint clearer.\n'
         'Output only the spoken hint. Do not start with a speaker name, role label, colon prefix, or field label.\n'
-        'Do not repeat template phrases such as "points to", "evaluation", "score", "depth", "best move", "指向", "評估", "分數", "深度", or "最佳".';
+        'Do not repeat template phrases such as "points to", "evaluation", "score", "depth", "best move", "指向", "評估", "分數", "深度", or "最佳步".';
   }
 
   String _idleBanterPrompt({
@@ -2266,34 +2385,34 @@ class GameController extends Notifier<GameState> {
 
   String _opponentSystemPrompt(GameSessionConfig config) {
     final strings = AppStrings.of(config.locale);
-    final persona = switch (strings.locale) {
+    final role = profileForConfig(config).promptRole(strings);
+    final personality = switch (strings.locale) {
       AppLocale.en => switch (config.persona) {
         Persona.coldMaster =>
-          'You are a cold chess rival: precise, controlled, intimidating.',
+          'Personality: cold, precise, controlled, intimidating.',
         Persona.trashTalker =>
-          'You are a playful chess trash talker. Be sharp but not hateful.',
+          'Personality: playful table talk, sharp challenge, never hateful.',
         Persona.coach =>
-          'You are the opponent, but you also explain pressure like a sparring partner.',
+          'Personality: sparring partner energy, explains pressure while competing.',
         Persona.gentleman =>
-          'You are a respectful gentleman rival with confident table talk.',
+          'Personality: respectful, poised, confident match-room tone.',
         Persona.trickster =>
-          'You are a tricky chess rival who likes traps, ambiguity, and playful misdirection.',
-        Persona.speedDemon =>
-          'You are a fast, sharp chess rival with urgent, energetic table talk.',
+          'Personality: tricky, trap-setting, playful misdirection.',
+        Persona.speedDemon => 'Personality: fast, sharp, urgent, energetic.',
         Persona.endgameGrinder =>
-          'You are a patient endgame specialist who loves small advantages and technical pressure.',
+          'Personality: patient, technical, loves small advantages and conversion pressure.',
         Persona.royalVillain =>
-          'You are a theatrical royal chess villain: grand, elegant, and intimidating.',
+          'Personality: theatrical, grand, elegant, slightly intimidating.',
       },
       AppLocale.zhHant => switch (config.persona) {
-        Persona.coldMaster => '你是冷酷的西洋棋勁敵：精準、克制、有壓迫感。',
-        Persona.trashTalker => '你是會嘴砲的西洋棋對手。犀利但不要仇恨或冒犯。',
-        Persona.coach => '你是對手，也會像陪練一樣說明壓力來源。',
-        Persona.gentleman => '你是尊重對手的紳士勁敵，語氣自信。',
-        Persona.trickster => '你是喜歡陷阱、模糊威脅與玩笑誤導的西洋棋勁敵。',
-        Persona.speedDemon => '你是快速、銳利、有急迫感的西洋棋快棋對手。',
-        Persona.endgameGrinder => '你是耐心的殘局專家，喜歡微小優勢與技術壓迫。',
-        Persona.royalVillain => '你是戲劇化的王室西洋棋反派：華麗、優雅、有壓迫感。',
+        Persona.coldMaster => '個性：冷酷、精準、克制、有壓迫感。',
+        Persona.trashTalker => '個性：會嘴砲、挑戰感強，但不要仇恨或冒犯。',
+        Persona.coach => '個性：陪練感，競爭時也會點出壓力來源。',
+        Persona.gentleman => '個性：尊重對手、沉著、自信，有正式比賽感。',
+        Persona.trickster => '個性：喜歡陷阱、假動作與玩笑式誤導。',
+        Persona.speedDemon => '個性：快速、銳利、有急迫感。',
+        Persona.endgameGrinder => '個性：耐心、技術型，喜歡磨小優勢。',
+        Persona.royalVillain => '個性：戲劇化、華麗、優雅且略有壓迫感。',
       },
     };
     final taunt = switch (strings.locale) {
@@ -2314,7 +2433,7 @@ class GameController extends Notifier<GameState> {
       AppLocale.zhHant =>
         '回覆少於 22 個中文字。必須回應至少一個具體局面線索，例如王安全、中心張力、鬆動棋子、開放線、兵結構、先手或走法品質。只輸出對話本體，不要角色名或冒號前綴。不要提引擎原始輸出，也不要使用歧視或威脅。可使用簡潔 markdown。請一律使用繁體中文。',
     };
-    return '$persona $taunt $rule';
+    return '$role $personality $taunt $rule';
   }
 
   String _coachSystemPrompt(GameSessionConfig config) {

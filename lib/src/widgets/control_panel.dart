@@ -681,6 +681,7 @@ class _ControlPanelTabPageState extends State<_ControlPanelTabPage> {
         return BotsTab(
           state: widget.state,
           currentProfile: widget.currentProfile,
+          onPersonaChanged: widget.onPersonaChanged,
           onProfileSelected: _applyProfile,
         );
       case 1:
@@ -739,7 +740,7 @@ class _ControlPanelTabPageState extends State<_ControlPanelTabPage> {
   Future<void> _applyProfile(BotProfile profile) {
     final config = widget.state.config.copyWith(
       difficulty: profile.difficulty,
-      persona: profile.persona,
+      botProfileName: profile.name,
       tauntLevel: profile.tauntLevel,
     );
     return widget.onNewGamePressed(config: config);

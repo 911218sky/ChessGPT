@@ -197,6 +197,7 @@ class _ReviewSummaryGrid extends StatelessWidget {
           children: [
             Expanded(
               child: _SummaryPill(
+                key: const ValueKey('review-summary-reviewed'),
                 label: strings.reviewedMoves,
                 value: '${summary.reviewedMoves}',
                 icon: Icons.fact_check_rounded,
@@ -206,6 +207,7 @@ class _ReviewSummaryGrid extends StatelessWidget {
             const SizedBox(width: 8),
             Expanded(
               child: _SummaryPill(
+                key: const ValueKey('review-summary-good'),
                 label: strings.goodMoves,
                 value: '${summary.goodMoveCount}',
                 icon: Icons.trending_up_rounded,
@@ -215,6 +217,7 @@ class _ReviewSummaryGrid extends StatelessWidget {
             const SizedBox(width: 8),
             Expanded(
               child: _SummaryPill(
+                key: const ValueKey('review-summary-problem'),
                 label: strings.problemMoves,
                 value: '${summary.problemMoveCount}',
                 icon: Icons.warning_amber_rounded,
@@ -230,6 +233,7 @@ class _ReviewSummaryGrid extends StatelessWidget {
           children: [
             Expanded(
               child: _MetricChip(
+                key: const ValueKey('review-summary-average-cp'),
                 label: strings.averageCpLoss,
                 value: '${summary.averageCentipawnLoss}',
               ),
@@ -237,6 +241,7 @@ class _ReviewSummaryGrid extends StatelessWidget {
             const SizedBox(width: 8),
             Expanded(
               child: _MetricChip(
+                key: const ValueKey('review-summary-average-pace'),
                 label: strings.averagePace,
                 value: _formatDurationMs(summary.averageMoveMs),
               ),
@@ -244,6 +249,7 @@ class _ReviewSummaryGrid extends StatelessWidget {
             const SizedBox(width: 8),
             Expanded(
               child: _MetricChip(
+                key: const ValueKey('review-summary-last-pace'),
                 label: strings.lastPace,
                 value: _formatDurationMs(summary.lastMoveMs),
               ),
@@ -271,6 +277,7 @@ class _ReviewSummaryGrid extends StatelessWidget {
 
 class _SummaryPill extends StatelessWidget {
   const _SummaryPill({
+    super.key,
     required this.label,
     required this.value,
     required this.icon,
@@ -343,6 +350,7 @@ class _ProblemBreakdown extends StatelessWidget {
       child: Column(
         children: [
           _BreakdownLine(
+            key: const ValueKey('review-breakdown-mistakes'),
             label: strings.mistakes,
             value: summary.mistakeCount,
             icon: '?',
@@ -350,6 +358,7 @@ class _ProblemBreakdown extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           _BreakdownLine(
+            key: const ValueKey('review-breakdown-missed-chances'),
             label: strings.missedChances,
             value: summary.missCount,
             icon: 'X',
@@ -357,6 +366,7 @@ class _ProblemBreakdown extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           _BreakdownLine(
+            key: const ValueKey('review-breakdown-critical-mistakes'),
             label: strings.criticalMistakes,
             value: summary.blunderCount,
             icon: '??',
@@ -370,6 +380,7 @@ class _ProblemBreakdown extends StatelessWidget {
 
 class _BreakdownLine extends StatelessWidget {
   const _BreakdownLine({
+    super.key,
     required this.label,
     required this.value,
     required this.icon,
@@ -426,7 +437,7 @@ class _BreakdownLine extends StatelessWidget {
 }
 
 class _MetricChip extends StatelessWidget {
-  const _MetricChip({required this.label, required this.value});
+  const _MetricChip({super.key, required this.label, required this.value});
 
   final String label;
   final String value;

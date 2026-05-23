@@ -14,6 +14,10 @@ void main() {
     await _pumpBoard(tester, hintLines: _hintLines());
     expect(tester.takeException(), isNull);
     expect(find.byType(ChessBoard), findsOneWidget);
+    expect(
+      find.byKey(const ValueKey('hint-lines-1-e2-e4|2-g1-f3')),
+      findsOneWidget,
+    );
 
     await tester.pump(const Duration(milliseconds: 120));
     await _pumpBoard(tester, hintLines: List<EngineLine>.of(_hintLines()));
@@ -21,6 +25,10 @@ void main() {
 
     expect(tester.takeException(), isNull);
     expect(find.byType(ChessBoard), findsOneWidget);
+    expect(
+      find.byKey(const ValueKey('hint-lines-1-e2-e4|2-g1-f3')),
+      findsOneWidget,
+    );
   });
 
   testWidgets('maps taps for both player orientations', (tester) async {
@@ -103,6 +111,7 @@ void main() {
 
     expect(tester.takeException(), isNull);
     expect(find.text('DEFEAT'), findsWidgets);
+    expect(find.byKey(const ValueKey('losing-king-e1')), findsOneWidget);
   });
 
   testWidgets('renders the victory overlay for a player win', (tester) async {
@@ -164,6 +173,7 @@ void main() {
 
     expect(tester.takeException(), isNull);
     expect(find.byType(ChessBoard), findsOneWidget);
+    expect(find.byKey(const ValueKey('checked-king-e1')), findsOneWidget);
   });
 
   testWidgets('only legal response pieces stay draggable while in check', (

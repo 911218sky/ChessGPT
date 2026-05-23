@@ -125,10 +125,13 @@ class _LlmTabState extends State<LlmTab> {
                   onChanged: widget.onLlmEnabledChanged,
                 ),
                 const SizedBox(height: 8),
-                _ProviderPresetSection(
-                  settings: state.config.llm,
-                  strings: strings,
-                  onChanged: widget.onLlmProviderKindChanged,
+                InlineCollapsibleSection(
+                  title: strings.providerPreset,
+                  child: _ProviderPresetSection(
+                    settings: state.config.llm,
+                    strings: strings,
+                    onChanged: widget.onLlmProviderKindChanged,
+                  ),
                 ),
                 const SizedBox(height: 14),
                 Text(
@@ -143,6 +146,7 @@ class _LlmTabState extends State<LlmTab> {
                   label: strings.providerName,
                   controller: _providerController,
                   onChanged: widget.onLlmProviderChanged,
+                  readOnly: true,
                 ),
                 const SizedBox(height: 14),
                 LabeledTextField(
@@ -290,44 +294,32 @@ class _ProviderPresetSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          strings.providerPreset,
-          style: Theme.of(
-            context,
-          ).textTheme.labelLarge?.copyWith(color: Colors.white70),
-        ),
-        const SizedBox(height: 8),
-        LayoutBuilder(
-          builder: (context, constraints) {
-            final columns = constraints.maxWidth >= 430 ? 2 : 1;
-            const spacing = 10.0;
-            const cardHeight = 104.0;
-            final cardWidth =
-                (constraints.maxWidth - (spacing * (columns - 1))) / columns;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final columns = constraints.maxWidth >= 430 ? 2 : 1;
+        const spacing = 10.0;
+        const cardHeight = 104.0;
+        final cardWidth =
+            (constraints.maxWidth - (spacing * (columns - 1))) / columns;
 
-            return GridView.count(
-              crossAxisCount: columns,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              mainAxisSpacing: spacing,
-              crossAxisSpacing: spacing,
-              childAspectRatio: cardWidth / cardHeight,
-              children: [
-                for (final provider in LlmProviderKind.values)
-                  _ProviderCard(
-                    provider: provider,
-                    strings: strings,
-                    selected: settings.providerKind == provider,
-                    onTap: () => onChanged(provider),
-                  ),
-              ],
-            );
-          },
-        ),
-      ],
+        return GridView.count(
+          crossAxisCount: columns,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          mainAxisSpacing: spacing,
+          crossAxisSpacing: spacing,
+          childAspectRatio: cardWidth / cardHeight,
+          children: [
+            for (final provider in LlmProviderKind.values)
+              _ProviderCard(
+                provider: provider,
+                strings: strings,
+                selected: settings.providerKind == provider,
+                onTap: () => onChanged(provider),
+              ),
+          ],
+        );
+      },
     );
   }
 }
@@ -350,12 +342,14 @@ class _ProviderCard extends StatelessWidget {
     final color = switch (provider) {
       LlmProviderKind.openAiCompatible => const Color(0xFF7CE3C8),
       LlmProviderKind.googleGemini => const Color(0xFF8CB7FF),
+      LlmProviderKind.kimiCode => const Color(0xFFFF8A5B),
       LlmProviderKind.anthropicClaude => const Color(0xFFFFC66D),
       LlmProviderKind.customCompatible => const Color(0xFFC79BFF),
     };
     final icon = switch (provider) {
       LlmProviderKind.openAiCompatible => Icons.cloud_rounded,
       LlmProviderKind.googleGemini => Icons.auto_awesome_rounded,
+      LlmProviderKind.kimiCode => Icons.code_rounded,
       LlmProviderKind.anthropicClaude => Icons.psychology_rounded,
       LlmProviderKind.customCompatible => Icons.tune_rounded,
     };

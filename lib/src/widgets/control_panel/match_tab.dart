@@ -418,18 +418,188 @@ class _ThemePicker extends StatelessWidget {
           ).textTheme.labelLarge?.copyWith(color: Colors.white70),
         ),
         const SizedBox(height: 8),
-        Wrap(
-          spacing: 10,
-          runSpacing: 10,
+        _SelectedThemePreview(
+          themeId: value,
+          label: value.localizedLabel(strings),
+          strings: strings,
+        ),
+        const SizedBox(height: 12),
+        _ThemeGalleryHeader(
+          title: strings.featuredThemes,
+          subtitle: '${BoardThemeId.values.length} themes',
+        ),
+        const SizedBox(height: 10),
+        LayoutBuilder(
+          builder: (context, constraints) {
+            final width = constraints.maxWidth;
+            final columns = width >= 430 ? 3 : (width >= 310 ? 2 : 1);
+            final tileWidth = (width - ((columns - 1) * 10)) / columns;
+            return Wrap(
+              spacing: 10,
+              runSpacing: 10,
+              children: [
+                for (final themeId in BoardThemeId.values)
+                  _ThemeSwatchCard(
+                    themeId: themeId,
+                    selected: themeId == value,
+                    label: themeId.localizedLabel(strings),
+                    width: tileWidth,
+                    strings: strings,
+                    onTap: () => onChanged(themeId),
+                  ),
+              ],
+            );
+          },
+        ),
+      ],
+    );
+  }
+}
+
+class _SelectedThemePreview extends StatelessWidget {
+  const _SelectedThemePreview({
+    required this.themeId,
+    required this.label,
+    required this.strings,
+  });
+
+  final BoardThemeId themeId;
+  final String label;
+  final AppStrings strings;
+
+  @override
+  Widget build(BuildContext context) {
+    final style = boardThemeStyle(themeId);
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(22),
+      child: Container(
+        height: 132,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(22),
+          border: Border.all(color: Colors.white12),
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              style.backdropTop.withValues(alpha: 0.96),
+              style.backdropBottom.withValues(alpha: 0.98),
+            ],
+          ),
+        ),
+        child: Stack(
+          fit: StackFit.expand,
           children: [
-            for (final themeId in BoardThemeId.values)
-              _ThemeSwatchCard(
-                themeId: themeId,
-                selected: themeId == value,
-                label: themeId.localizedLabel(strings),
-                onTap: () => onChanged(themeId),
+            if (style.backdropAsset != null)
+              Positioned.fill(
+                child: Image.asset(
+                  style.backdropAsset!,
+                  fit: BoxFit.cover,
+                  cacheWidth: 720,
+                  cacheHeight: 405,
+                  filterQuality: FilterQuality.medium,
+                  excludeFromSemantics: true,
+                ),
+              )
+            else
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      style.backdropTop.withValues(alpha: 0.96),
+                      style.backdropBottom.withValues(alpha: 0.98),
+                    ],
+                  ),
+                ),
               ),
+            DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.black.withValues(alpha: 0.08),
+                    Colors.black.withValues(alpha: 0.42),
+                  ],
+                ),
+              ),
+            ),
+            Positioned(
+              left: 16,
+              right: 16,
+              bottom: 16,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          label,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w900,
+                                shadows: const [
+                                  Shadow(
+                                    blurRadius: 4,
+                                    color: Color(0xAA000000),
+                                    offset: Offset(0, 1),
+                                  ),
+                                ],
+                              ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          strings.boardTheme,
+                          style: Theme.of(context).textTheme.labelMedium
+                              ?.copyWith(
+                                color: Colors.white70,
+                                fontWeight: FontWeight.w700,
+                              ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ThemeGalleryHeader extends StatelessWidget {
+  const _ThemeGalleryHeader({required this.title, required this.subtitle});
+
+  final String title;
+  final String subtitle;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Text(
+          title,
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+            color: Colors.white,
+            fontWeight: FontWeight.w900,
+          ),
+        ),
+        const Spacer(),
+        Text(
+          subtitle,
+          style: Theme.of(context).textTheme.labelMedium?.copyWith(
+            color: Colors.white54,
+            fontWeight: FontWeight.w700,
+          ),
         ),
       ],
     );
@@ -441,12 +611,16 @@ class _ThemeSwatchCard extends StatelessWidget {
     required this.themeId,
     required this.selected,
     required this.label,
+    required this.width,
+    required this.strings,
     required this.onTap,
   });
 
   final BoardThemeId themeId;
   final bool selected;
   final String label;
+  final double width;
+  final AppStrings strings;
   final VoidCallback onTap;
 
   @override
@@ -459,8 +633,8 @@ class _ThemeSwatchCard extends StatelessWidget {
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 160),
-        width: 150,
-        height: 112,
+        width: width,
+        height: 122,
         padding: const EdgeInsets.fromLTRB(10, 10, 10, 9),
         decoration: BoxDecoration(
           color: style.panelTint.withValues(alpha: selected ? 0.82 : 0.46),
@@ -488,28 +662,40 @@ class _ThemeSwatchCard extends StatelessWidget {
                 child: Stack(
                   fit: StackFit.expand,
                   children: [
+                    if (style.backdropAsset != null)
+                      Image.asset(
+                        style.backdropAsset!,
+                        fit: BoxFit.cover,
+                        alignment: Alignment.center,
+                        cacheWidth: 360,
+                        cacheHeight: 203,
+                        filterQuality: FilterQuality.low,
+                        excludeFromSemantics: true,
+                      )
+                    else
+                      DecoratedBox(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              style.backdropTop.withValues(alpha: 0.96),
+                              style.backdropBottom.withValues(alpha: 0.98),
+                            ],
+                          ),
+                        ),
+                      ),
                     DecoratedBox(
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
                           colors: [
-                            style.lightSquare.withValues(alpha: 0.98),
-                            style.darkSquare.withValues(alpha: 0.98),
+                            Colors.black.withValues(alpha: 0.04),
+                            Colors.black.withValues(alpha: 0.34),
                           ],
                         ),
                       ),
-                    ),
-                    Row(
-                      children: [
-                        _SwatchBlock(
-                          color: style.lightSquare.withValues(alpha: 0.84),
-                        ),
-                        _SwatchBlock(
-                          color: style.darkSquare.withValues(alpha: 0.88),
-                        ),
-                        _SwatchBlock(color: accent.withValues(alpha: 0.86)),
-                      ],
                     ),
                     if (selected)
                       Positioned(
@@ -550,19 +736,6 @@ class _ThemeSwatchCard extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-class _SwatchBlock extends StatelessWidget {
-  const _SwatchBlock({required this.color});
-
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: DecoratedBox(decoration: BoxDecoration(color: color)),
     );
   }
 }
