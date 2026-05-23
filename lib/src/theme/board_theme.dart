@@ -44,18 +44,18 @@ enum BoardThemeId {
     AppLocale.zhHant => switch (this) {
       BoardThemeId.classicWood => '經典木紋',
       BoardThemeId.tournamentGreen => '錦標賽綠',
-      BoardThemeId.oceanSlate => '海洋岩板',
+      BoardThemeId.oceanSlate => '海洋板岩',
       BoardThemeId.walnut => '胡桃木',
       BoardThemeId.midnight => '午夜',
       BoardThemeId.jungleCanopy => '叢林樹冠',
-      BoardThemeId.coralReef => '珊瑚海域',
-      BoardThemeId.desertSun => '沙漠日輪',
+      BoardThemeId.coralReef => '珊瑚礁',
+      BoardThemeId.desertSun => '沙漠夕陽',
       BoardThemeId.frostTemple => '冰霜神殿',
-      BoardThemeId.lavaForge => '熔岩鍛爐',
+      BoardThemeId.lavaForge => '熔岩鍛坊',
       BoardThemeId.sakuraGarden => '櫻花庭園',
-      BoardThemeId.neonCity => '霓虹都市',
+      BoardThemeId.neonCity => '霓虹城市',
       BoardThemeId.royalMarble => '皇家大理石',
-      BoardThemeId.autumnAcademy => '秋日書院',
+      BoardThemeId.autumnAcademy => '秋日學院',
       BoardThemeId.crystalCavern => '水晶洞窟',
       BoardThemeId.skyCitadel => '天空城塞',
     },
@@ -85,7 +85,13 @@ class BoardThemeStyle {
     required this.backdropAccent,
     required this.backdropShadow,
     required this.panelTint,
+    this.leftBannerAsset,
+    this.rightBannerAsset,
+    this.bannerOpacity = 0.88,
+    this.backdropSpec = const BoardThemeBackdropSpec(),
     this.backdropAsset,
+    this.boardTextureSet,
+    this.boardTextureOpacity = 0.34,
   });
 
   final BoardThemeId id;
@@ -109,7 +115,13 @@ class BoardThemeStyle {
   final Color backdropAccent;
   final Color backdropShadow;
   final Color panelTint;
+  final String? leftBannerAsset;
+  final String? rightBannerAsset;
+  final double bannerOpacity;
+  final BoardThemeBackdropSpec backdropSpec;
   final String? backdropAsset;
+  final BoardTextureSet? boardTextureSet;
+  final double boardTextureOpacity;
 }
 
 class ChessPieceSet {
@@ -128,11 +140,168 @@ class ChessPieceSet {
   String assetFor(String code) => '$basePath/$code.$extension';
 }
 
+class BoardTextureSet {
+  const BoardTextureSet({
+    required this.id,
+    required this.label,
+    required this.basePath,
+  });
+
+  final String id;
+  final String label;
+  final String basePath;
+
+  String assetFor(bool isLight) =>
+      '$basePath/${isLight ? 'light' : 'dark'}.webp';
+}
+
+enum BoardThemeBackdropOrnamentKind {
+  banner,
+  pillar,
+  plume,
+  sigil,
+  arch,
+  crystal,
+  lantern,
+}
+
+class BoardThemeBackdropOrnament {
+  const BoardThemeBackdropOrnament({
+    required this.kind,
+    required this.alignment,
+    required this.size,
+    required this.color,
+    this.opacity = 1,
+    this.rotation = 0,
+  });
+
+  final BoardThemeBackdropOrnamentKind kind;
+  final Alignment alignment;
+  final Size size;
+  final Color color;
+  final double opacity;
+  final double rotation;
+}
+
+class BoardThemeBackdropSpec {
+  const BoardThemeBackdropSpec({
+    this.edgeGlowColor,
+    this.edgeGlowOpacity = 0.18,
+    this.mistColor,
+    this.mistOpacity = 0.10,
+    this.vignetteOpacity = 0.42,
+    this.ornaments = const [],
+  });
+
+  final Color? edgeGlowColor;
+  final double edgeGlowOpacity;
+  final Color? mistColor;
+  final double mistOpacity;
+  final double vignetteOpacity;
+  final List<BoardThemeBackdropOrnament> ornaments;
+}
+
 const cburnettPieceSet = ChessPieceSet(
   id: 'cburnett',
   label: 'Cburnett',
   basePath: 'assets/chess/pieces/cburnett_png',
   extension: 'png',
+);
+
+const autumnAcademyBoardTextureSet = BoardTextureSet(
+  id: 'autumn_academy',
+  label: 'Autumn Academy',
+  basePath: 'assets/chess/board_textures/autumn_academy',
+);
+
+const classicWoodBoardTextureSet = BoardTextureSet(
+  id: 'classic_wood',
+  label: 'Classic Wood',
+  basePath: 'assets/chess/board_textures/classic_wood',
+);
+
+const coralReefBoardTextureSet = BoardTextureSet(
+  id: 'coral_reef',
+  label: 'Coral Reef',
+  basePath: 'assets/chess/board_textures/coral_reef',
+);
+
+const crystalCavernBoardTextureSet = BoardTextureSet(
+  id: 'crystal_cavern',
+  label: 'Crystal Cavern',
+  basePath: 'assets/chess/board_textures/crystal_cavern',
+);
+
+const desertSunBoardTextureSet = BoardTextureSet(
+  id: 'desert_sun',
+  label: 'Desert Sun',
+  basePath: 'assets/chess/board_textures/desert_sun',
+);
+
+const frostTempleBoardTextureSet = BoardTextureSet(
+  id: 'frost_temple',
+  label: 'Frost Temple',
+  basePath: 'assets/chess/board_textures/frost_temple',
+);
+
+const jungleCanopyBoardTextureSet = BoardTextureSet(
+  id: 'jungle_canopy',
+  label: 'Jungle Canopy',
+  basePath: 'assets/chess/board_textures/jungle_canopy',
+);
+
+const lavaForgeBoardTextureSet = BoardTextureSet(
+  id: 'lava_forge',
+  label: 'Lava Forge',
+  basePath: 'assets/chess/board_textures/lava_forge',
+);
+
+const midnightBoardTextureSet = BoardTextureSet(
+  id: 'midnight_observatory',
+  label: 'Midnight Observatory',
+  basePath: 'assets/chess/board_textures/midnight_observatory',
+);
+
+const neonCityBoardTextureSet = BoardTextureSet(
+  id: 'neon_city',
+  label: 'Neon City',
+  basePath: 'assets/chess/board_textures/neon_city',
+);
+
+const oceanSlateBoardTextureSet = BoardTextureSet(
+  id: 'ocean_slate',
+  label: 'Ocean Slate',
+  basePath: 'assets/chess/board_textures/ocean_slate',
+);
+
+const royalMarbleBoardTextureSet = BoardTextureSet(
+  id: 'royal_marble',
+  label: 'Royal Marble',
+  basePath: 'assets/chess/board_textures/royal_marble',
+);
+
+const sakuraGardenBoardTextureSet = BoardTextureSet(
+  id: 'sakura_garden',
+  label: 'Sakura Garden',
+  basePath: 'assets/chess/board_textures/sakura_garden',
+);
+
+const skyCitadelBoardTextureSet = BoardTextureSet(
+  id: 'sky_citadel',
+  label: 'Sky Citadel',
+  basePath: 'assets/chess/board_textures/sky_citadel',
+);
+
+const tournamentGreenBoardTextureSet = BoardTextureSet(
+  id: 'tournament_green',
+  label: 'Tournament Green',
+  basePath: 'assets/chess/board_textures/tournament_green',
+);
+
+const walnutBoardTextureSet = BoardTextureSet(
+  id: 'walnut_study',
+  label: 'Walnut Study',
+  basePath: 'assets/chess/board_textures/walnut_study',
 );
 
 const boardThemeStyles = <BoardThemeId, BoardThemeStyle>{
@@ -158,7 +327,8 @@ const boardThemeStyles = <BoardThemeId, BoardThemeStyle>{
     backdropAccent: Color(0xFFC88943),
     backdropShadow: Color(0xFF2D1710),
     panelTint: Color(0xFF382719),
-    backdropAsset: 'assets/chess/themes/classic-wood-club.png',
+    backdropAsset: 'assets/chess/themes/classic-wood-club.webp',
+    boardTextureSet: classicWoodBoardTextureSet,
   ),
   BoardThemeId.tournamentGreen: BoardThemeStyle(
     id: BoardThemeId.tournamentGreen,
@@ -182,7 +352,8 @@ const boardThemeStyles = <BoardThemeId, BoardThemeStyle>{
     backdropAccent: Color(0xFF8DB05F),
     backdropShadow: Color(0xFF172214),
     panelTint: Color(0xFF263120),
-    backdropAsset: 'assets/chess/themes/tournament-green-hall.png',
+    backdropAsset: 'assets/chess/themes/tournament-green-hall.webp',
+    boardTextureSet: tournamentGreenBoardTextureSet,
   ),
   BoardThemeId.oceanSlate: BoardThemeStyle(
     id: BoardThemeId.oceanSlate,
@@ -206,7 +377,8 @@ const boardThemeStyles = <BoardThemeId, BoardThemeStyle>{
     backdropAccent: Color(0xFF6CC7D8),
     backdropShadow: Color(0xFF10212A),
     panelTint: Color(0xFF1D313A),
-    backdropAsset: 'assets/chess/themes/ocean-slate-terrace.png',
+    backdropAsset: 'assets/chess/themes/ocean-slate-terrace.webp',
+    boardTextureSet: oceanSlateBoardTextureSet,
   ),
   BoardThemeId.walnut: BoardThemeStyle(
     id: BoardThemeId.walnut,
@@ -230,7 +402,8 @@ const boardThemeStyles = <BoardThemeId, BoardThemeStyle>{
     backdropAccent: Color(0xFFA96938),
     backdropShadow: Color(0xFF22110B),
     panelTint: Color(0xFF2C1F18),
-    backdropAsset: 'assets/chess/themes/walnut-study.png',
+    backdropAsset: 'assets/chess/themes/walnut-study.webp',
+    boardTextureSet: walnutBoardTextureSet,
   ),
   BoardThemeId.midnight: BoardThemeStyle(
     id: BoardThemeId.midnight,
@@ -254,7 +427,8 @@ const boardThemeStyles = <BoardThemeId, BoardThemeStyle>{
     backdropAccent: Color(0xFF769BFF),
     backdropShadow: Color(0xFF070912),
     panelTint: Color(0xFF1B2030),
-    backdropAsset: 'assets/chess/themes/midnight-observatory.png',
+    backdropAsset: 'assets/chess/themes/midnight-observatory.webp',
+    boardTextureSet: midnightBoardTextureSet,
   ),
   BoardThemeId.jungleCanopy: BoardThemeStyle(
     id: BoardThemeId.jungleCanopy,
@@ -278,7 +452,8 @@ const boardThemeStyles = <BoardThemeId, BoardThemeStyle>{
     backdropAccent: Color(0xFF7BC56A),
     backdropShadow: Color(0xFF0B2413),
     panelTint: Color(0xFF172A1E),
-    backdropAsset: 'assets/chess/themes/jungle-arena.png',
+    backdropAsset: 'assets/chess/themes/jungle-arena.webp',
+    boardTextureSet: jungleCanopyBoardTextureSet,
   ),
   BoardThemeId.coralReef: BoardThemeStyle(
     id: BoardThemeId.coralReef,
@@ -302,7 +477,8 @@ const boardThemeStyles = <BoardThemeId, BoardThemeStyle>{
     backdropAccent: Color(0xFF4FD7D8),
     backdropShadow: Color(0xFF061D2B),
     panelTint: Color(0xFF142F3C),
-    backdropAsset: 'assets/chess/themes/ocean-arena.png',
+    backdropAsset: 'assets/chess/themes/ocean-arena.webp',
+    boardTextureSet: coralReefBoardTextureSet,
   ),
   BoardThemeId.desertSun: BoardThemeStyle(
     id: BoardThemeId.desertSun,
@@ -326,7 +502,8 @@ const boardThemeStyles = <BoardThemeId, BoardThemeStyle>{
     backdropAccent: Color(0xFFE29A48),
     backdropShadow: Color(0xFF32190D),
     panelTint: Color(0xFF342217),
-    backdropAsset: 'assets/chess/themes/desert-arena.png',
+    backdropAsset: 'assets/chess/themes/desert-arena.webp',
+    boardTextureSet: desertSunBoardTextureSet,
   ),
   BoardThemeId.frostTemple: BoardThemeStyle(
     id: BoardThemeId.frostTemple,
@@ -350,7 +527,49 @@ const boardThemeStyles = <BoardThemeId, BoardThemeStyle>{
     backdropAccent: Color(0xFF9EDCF2),
     backdropShadow: Color(0xFF142433),
     panelTint: Color(0xFF1B2A34),
-    backdropAsset: 'assets/chess/themes/frost-temple.png',
+    backdropSpec: BoardThemeBackdropSpec(
+      edgeGlowColor: Color(0xFF9EDCF2),
+      edgeGlowOpacity: 0.26,
+      mistColor: Color(0xFFBEEBFB),
+      mistOpacity: 0.15,
+      vignetteOpacity: 0.50,
+      ornaments: [
+        BoardThemeBackdropOrnament(
+          kind: BoardThemeBackdropOrnamentKind.crystal,
+          alignment: Alignment.topLeft,
+          size: Size(260, 240),
+          color: Color(0xFFD4F6FF),
+          opacity: 0.20,
+          rotation: -0.14,
+        ),
+        BoardThemeBackdropOrnament(
+          kind: BoardThemeBackdropOrnamentKind.crystal,
+          alignment: Alignment.topRight,
+          size: Size(300, 280),
+          color: Color(0xFFB6EDF7),
+          opacity: 0.22,
+          rotation: 0.08,
+        ),
+        BoardThemeBackdropOrnament(
+          kind: BoardThemeBackdropOrnamentKind.plume,
+          alignment: Alignment.bottomLeft,
+          size: Size(360, 200),
+          color: Color(0xFF9EDCF2),
+          opacity: 0.18,
+          rotation: -0.10,
+        ),
+        BoardThemeBackdropOrnament(
+          kind: BoardThemeBackdropOrnamentKind.banner,
+          alignment: Alignment.bottomRight,
+          size: Size(250, 150),
+          color: Color(0xFFA5DFF4),
+          opacity: 0.15,
+          rotation: 0.10,
+        ),
+      ],
+    ),
+    backdropAsset: 'assets/chess/themes/frost-temple.webp',
+    boardTextureSet: frostTempleBoardTextureSet,
   ),
   BoardThemeId.lavaForge: BoardThemeStyle(
     id: BoardThemeId.lavaForge,
@@ -374,7 +593,49 @@ const boardThemeStyles = <BoardThemeId, BoardThemeStyle>{
     backdropAccent: Color(0xFFFF7043),
     backdropShadow: Color(0xFF220B09),
     panelTint: Color(0xFF2B1715),
-    backdropAsset: 'assets/chess/themes/lava-forge.png',
+    backdropSpec: BoardThemeBackdropSpec(
+      edgeGlowColor: Color(0xFFFF7043),
+      edgeGlowOpacity: 0.30,
+      mistColor: Color(0xFFFF8A65),
+      mistOpacity: 0.14,
+      vignetteOpacity: 0.56,
+      ornaments: [
+        BoardThemeBackdropOrnament(
+          kind: BoardThemeBackdropOrnamentKind.pillar,
+          alignment: Alignment.topLeft,
+          size: Size(300, 280),
+          color: Color(0xFF8D2C24),
+          opacity: 0.20,
+          rotation: -0.06,
+        ),
+        BoardThemeBackdropOrnament(
+          kind: BoardThemeBackdropOrnamentKind.pillar,
+          alignment: Alignment.topRight,
+          size: Size(240, 220),
+          color: Color(0xFFB13A24),
+          opacity: 0.15,
+          rotation: 0.04,
+        ),
+        BoardThemeBackdropOrnament(
+          kind: BoardThemeBackdropOrnamentKind.plume,
+          alignment: Alignment.bottomRight,
+          size: Size(340, 220),
+          color: Color(0xFFFF6F45),
+          opacity: 0.20,
+          rotation: 0.10,
+        ),
+        BoardThemeBackdropOrnament(
+          kind: BoardThemeBackdropOrnamentKind.banner,
+          alignment: Alignment.bottomLeft,
+          size: Size(260, 150),
+          color: Color(0xFFFFA26A),
+          opacity: 0.15,
+          rotation: -0.08,
+        ),
+      ],
+    ),
+    backdropAsset: 'assets/chess/themes/lava-forge.webp',
+    boardTextureSet: lavaForgeBoardTextureSet,
   ),
   BoardThemeId.sakuraGarden: BoardThemeStyle(
     id: BoardThemeId.sakuraGarden,
@@ -398,7 +659,49 @@ const boardThemeStyles = <BoardThemeId, BoardThemeStyle>{
     backdropAccent: Color(0xFFF09DBC),
     backdropShadow: Color(0xFF241420),
     panelTint: Color(0xFF2F202B),
-    backdropAsset: 'assets/chess/themes/sakura-garden.png',
+    backdropSpec: BoardThemeBackdropSpec(
+      edgeGlowColor: Color(0xFFF09DBC),
+      edgeGlowOpacity: 0.24,
+      mistColor: Color(0xFFFFD9E8),
+      mistOpacity: 0.16,
+      vignetteOpacity: 0.48,
+      ornaments: [
+        BoardThemeBackdropOrnament(
+          kind: BoardThemeBackdropOrnamentKind.lantern,
+          alignment: Alignment.topLeft,
+          size: Size(240, 200),
+          color: Color(0xFFF0A3C0),
+          opacity: 0.18,
+          rotation: -0.08,
+        ),
+        BoardThemeBackdropOrnament(
+          kind: BoardThemeBackdropOrnamentKind.lantern,
+          alignment: Alignment.topRight,
+          size: Size(210, 180),
+          color: Color(0xFFFFB4D0),
+          opacity: 0.15,
+          rotation: 0.06,
+        ),
+        BoardThemeBackdropOrnament(
+          kind: BoardThemeBackdropOrnamentKind.plume,
+          alignment: Alignment.bottomRight,
+          size: Size(360, 220),
+          color: Color(0xFFEFA0B8),
+          opacity: 0.18,
+          rotation: 0.08,
+        ),
+        BoardThemeBackdropOrnament(
+          kind: BoardThemeBackdropOrnamentKind.banner,
+          alignment: Alignment.bottomLeft,
+          size: Size(260, 140),
+          color: Color(0xFFFFC3DA),
+          opacity: 0.14,
+          rotation: -0.06,
+        ),
+      ],
+    ),
+    backdropAsset: 'assets/chess/themes/sakura-garden.webp',
+    boardTextureSet: sakuraGardenBoardTextureSet,
   ),
   BoardThemeId.neonCity: BoardThemeStyle(
     id: BoardThemeId.neonCity,
@@ -422,7 +725,49 @@ const boardThemeStyles = <BoardThemeId, BoardThemeStyle>{
     backdropAccent: Color(0xFF47DFF0),
     backdropShadow: Color(0xFF090718),
     panelTint: Color(0xFF171A2B),
-    backdropAsset: 'assets/chess/themes/neon-city.png',
+    backdropSpec: BoardThemeBackdropSpec(
+      edgeGlowColor: Color(0xFF47DFF0),
+      edgeGlowOpacity: 0.32,
+      mistColor: Color(0xFF7E7AFF),
+      mistOpacity: 0.12,
+      vignetteOpacity: 0.54,
+      ornaments: [
+        BoardThemeBackdropOrnament(
+          kind: BoardThemeBackdropOrnamentKind.sigil,
+          alignment: Alignment.topLeft,
+          size: Size(260, 260),
+          color: Color(0xFF59E2F5),
+          opacity: 0.22,
+          rotation: -0.06,
+        ),
+        BoardThemeBackdropOrnament(
+          kind: BoardThemeBackdropOrnamentKind.sigil,
+          alignment: Alignment.topRight,
+          size: Size(220, 220),
+          color: Color(0xFFFF5FD2),
+          opacity: 0.14,
+          rotation: 0.04,
+        ),
+        BoardThemeBackdropOrnament(
+          kind: BoardThemeBackdropOrnamentKind.banner,
+          alignment: Alignment.bottomRight,
+          size: Size(320, 160),
+          color: Color(0xFFFF62D4),
+          opacity: 0.18,
+          rotation: 0.06,
+        ),
+        BoardThemeBackdropOrnament(
+          kind: BoardThemeBackdropOrnamentKind.banner,
+          alignment: Alignment.bottomLeft,
+          size: Size(260, 130),
+          color: Color(0xFF4EEBFF),
+          opacity: 0.14,
+          rotation: -0.08,
+        ),
+      ],
+    ),
+    backdropAsset: 'assets/chess/themes/neon-city.webp',
+    boardTextureSet: neonCityBoardTextureSet,
   ),
   BoardThemeId.royalMarble: BoardThemeStyle(
     id: BoardThemeId.royalMarble,
@@ -446,7 +791,49 @@ const boardThemeStyles = <BoardThemeId, BoardThemeStyle>{
     backdropAccent: Color(0xFFD6B35E),
     backdropShadow: Color(0xFF20171A),
     panelTint: Color(0xFF2B2424),
-    backdropAsset: 'assets/chess/themes/royal-marble.png',
+    backdropSpec: BoardThemeBackdropSpec(
+      edgeGlowColor: Color(0xFFD6B35E),
+      edgeGlowOpacity: 0.25,
+      mistColor: Color(0xFFF0D39B),
+      mistOpacity: 0.10,
+      vignetteOpacity: 0.50,
+      ornaments: [
+        BoardThemeBackdropOrnament(
+          kind: BoardThemeBackdropOrnamentKind.arch,
+          alignment: Alignment.topLeft,
+          size: Size(260, 180),
+          color: Color(0xFFF0D39B),
+          opacity: 0.16,
+          rotation: -0.05,
+        ),
+        BoardThemeBackdropOrnament(
+          kind: BoardThemeBackdropOrnamentKind.arch,
+          alignment: Alignment.topRight,
+          size: Size(320, 220),
+          color: Color(0xFFDAC18A),
+          opacity: 0.20,
+          rotation: 0.06,
+        ),
+        BoardThemeBackdropOrnament(
+          kind: BoardThemeBackdropOrnamentKind.pillar,
+          alignment: Alignment.bottomLeft,
+          size: Size(280, 250),
+          color: Color(0xFF8E7258),
+          opacity: 0.18,
+          rotation: -0.08,
+        ),
+        BoardThemeBackdropOrnament(
+          kind: BoardThemeBackdropOrnamentKind.banner,
+          alignment: Alignment.bottomRight,
+          size: Size(270, 150),
+          color: Color(0xFFE3C06D),
+          opacity: 0.16,
+          rotation: 0.08,
+        ),
+      ],
+    ),
+    backdropAsset: 'assets/chess/themes/royal-marble.webp',
+    boardTextureSet: royalMarbleBoardTextureSet,
   ),
   BoardThemeId.autumnAcademy: BoardThemeStyle(
     id: BoardThemeId.autumnAcademy,
@@ -470,7 +857,8 @@ const boardThemeStyles = <BoardThemeId, BoardThemeStyle>{
     backdropAccent: Color(0xFFD9863A),
     backdropShadow: Color(0xFF211008),
     panelTint: Color(0xFF302018),
-    backdropAsset: 'assets/chess/themes/autumn-academy.png',
+    backdropAsset: 'assets/chess/themes/autumn-academy.webp',
+    boardTextureSet: autumnAcademyBoardTextureSet,
   ),
   BoardThemeId.crystalCavern: BoardThemeStyle(
     id: BoardThemeId.crystalCavern,
@@ -494,7 +882,8 @@ const boardThemeStyles = <BoardThemeId, BoardThemeStyle>{
     backdropAccent: Color(0xFF7FE5DA),
     backdropShadow: Color(0xFF100B24),
     panelTint: Color(0xFF1B2134),
-    backdropAsset: 'assets/chess/themes/crystal-cavern.png',
+    backdropAsset: 'assets/chess/themes/crystal-cavern.webp',
+    boardTextureSet: crystalCavernBoardTextureSet,
   ),
   BoardThemeId.skyCitadel: BoardThemeStyle(
     id: BoardThemeId.skyCitadel,
@@ -518,7 +907,8 @@ const boardThemeStyles = <BoardThemeId, BoardThemeStyle>{
     backdropAccent: Color(0xFFFFD47A),
     backdropShadow: Color(0xFF122038),
     panelTint: Color(0xFF1D2C3E),
-    backdropAsset: 'assets/chess/themes/sky-citadel.png',
+    backdropAsset: 'assets/chess/themes/sky-citadel.webp',
+    boardTextureSet: skyCitadelBoardTextureSet,
   ),
 };
 

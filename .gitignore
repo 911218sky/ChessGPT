@@ -2,14 +2,17 @@
 *.class
 *.log
 *.pyc
+__pycache__/
 *.swp
 .DS_Store
+.env
 .atom/
 .build/
 .buildlog/
 .history
 .svn/
 .swiftpm/
+.venv/
 migrate_working_dir/
 
 # IntelliJ related
@@ -33,11 +36,17 @@ migrate_working_dir/
 /build/
 /artifacts/
 /coverage/
+/generated_images/
+/generated_images/**
 /settings.json
 /windows/flutter/ephemeral/
 /third_party/stockfish/windows/stockfish.exe
 /third_party/stockfish/windows/COPYING.txt
 /third_party/stockfish/windows/README.stockfish.txt
+
+# Generated source sheets used to derive committed runtime assets.
+/assets/chess/board_textures/generated_sources/
+/assets/chess/pieces/generated_sources/
 
 # Symbolication related
 app.*.symbols
