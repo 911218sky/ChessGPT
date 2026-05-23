@@ -1,88 +1,112 @@
 # Chess AI Desktop
 
-Windows-first Flutter desktop app for playing chess against a local Stockfish
-engine, with optional LLM banter, hints, and post-game recap text.
+A Windows-first Flutter desktop chess app with a local Stockfish engine, optional LLM commentary, coach hints, and themeable boards.
 
-## Docs
+## What This Project Does
 
-- [docs/design-guide.md](docs/design-guide.md)
-  - UI direction, theme rules, and theme asset guidance
-- [docs/image-assets.md](docs/image-assets.md)
-  - Image generation and post-processing workflow
+- Play chess against a local AI engine
+- Show coach-style hints and move feedback
+- Add optional opponent banter and post-move commentary through an LLM
+- Let the player switch board themes, AI personality, coach personality, and engine settings
+- Save local preferences in `settings.json`
 
-## Status
+This is a desktop game project first. The board should stay central, the right panel should stay practical, and the app should feel like a polished chess product rather than a demo tool.
 
-- Flutter desktop scaffold is in place
-- Windows desktop is enabled
-- Local `settings.json` persistence is supported
-- Windows packaging and GitHub Actions are included
+## Project Status
 
-## Common Commands
+Current repo state:
 
-```bash
-rtk uv run python .\tools\sync_pubspec_assets.py
-rtk dart format --set-exit-if-changed .
-rtk flutter analyze
-rtk flutter test
-rtk flutter run -d windows
-rtk flutter build windows --release
-```
+- Flutter desktop app is working
+- Windows desktop target is enabled
+- Stockfish integration is wired in
+- LLM provider settings are configurable
+- Packaging and CI workflows are included
 
-## Image Generation Setup
+## Quick Start
 
-This repo includes a local Python 3.12 workflow for generating board
-backgrounds and theme overlays.
+### 1. Install prerequisites
 
-The preferred asset path is transparent PNG generation for theme overlays
-where needed. Black-background cleanup remains available for older assets, but
-it is no longer the primary workflow.
+- Flutter
+- Dart
+- Python 3.12
+- `uv`
 
-1. Create a local env file:
+### 2. Install dependencies
 
 ```powershell
-Copy-Item .env.example .env
-```
-
-2. Fill in:
-
-```text
-OPENAI_API_KEY=...
-OPENAI_BASE_URL=https://api.openai.com/v1
-OPENAI_IMAGE_MODEL=gpt-image-2
-```
-
-3. Install dependencies:
-
-```powershell
+rtk flutter pub get
 rtk uv sync
 ```
 
-4. Preview the batch:
+### 3. Download Stockfish for Windows
+
+```powershell
+rtk powershell -ExecutionPolicy Bypass -File .\tools\download_stockfish.ps1
+```
+
+Expected output path:
+
+```text
+third_party\stockfish\windows\stockfish.exe
+```
+
+If the bundled binary is missing, the app can still fall back to a `stockfish` executable found on `PATH`.
+
+### 4. Run the app
+
+```powershell
+rtk flutter run -d windows
+```
+
+## Common Commands
+
+```powershell
+rtk flutter analyze
+rtk flutter test
+rtk flutter build windows --release
+rtk uv run python .\tools\sync_pubspec_assets.py
+```
+
+## Key Docs
+
+- [docs/design-guide.md](docs/design-guide.md)
+  - UI direction, layout rules, and theme constraints
+- [docs/image-assets.md](docs/image-assets.md)
+  - Image generation, import, and asset sync workflow
+- [AGENTS.md](AGENTS.md)
+  - Project-specific working rules for agents and collaborators
+
+## Main Source Entry Points
+
+- [lib/src/app.dart](lib/src/app.dart)
+  - Main app shell, board workspace, backdrop, and layout
+- [lib/src/controllers/game_controller.dart](lib/src/controllers/game_controller.dart)
+  - Match flow, AI turns, hints, commentary, and state updates
+- [lib/src/widgets/control_panel.dart](lib/src/widgets/control_panel.dart)
+  - Right-side control panel
+- [lib/src/widgets/chess_board.dart](lib/src/widgets/chess_board.dart)
+  - Board rendering and interaction
+- [lib/src/models/session_config.dart](lib/src/models/session_config.dart)
+  - Match settings and persisted user preferences
+- [lib/src/theme/board_theme.dart](lib/src/theme/board_theme.dart)
+  - Theme catalog and visual registration
+
+## Asset Workflow
+
+Use the Python tools when you add or refresh board images.
+
+### Generate images
 
 ```powershell
 rtk uv run python .\tools\generate_openai_images.py --dry-run
-```
-
-5. Run the batch:
-
-```powershell
 rtk uv run python .\tools\generate_openai_images.py
 ```
 
-6. Import generated assets into Flutter:
+### Import images into Flutter assets
 
 ```powershell
 rtk uv run python .\tools\import_generated_assets.py
 rtk uv run python .\tools\sync_pubspec_assets.py
-```
-
-Useful variants:
-
-```powershell
-rtk uv run python .\tools\generate_openai_images.py --limit 3
-rtk uv run python .\tools\generate_openai_images.py --only autumn-academy-overlay crystal-cavern-overlay
-rtk uv run python .\tools\generate_openai_images.py --output-dir .\generated_images\manual-run
-rtk uv run python .\tools\generate_openai_images.py --size 1536x1024 --quality high
 ```
 
 Default batch file:
@@ -97,103 +121,67 @@ Generated output:
 generated_images\<timestamp>\
 ```
 
-For the full workflow, see
-[docs/image-assets.md](docs/image-assets.md).
+Before changing theme visuals, read:
 
-When you add, remove, or rename asset subdirectories under
-`assets/chess/pieces/`, re-run:
+- [docs/design-guide.md](docs/design-guide.md)
+- [docs/image-assets.md](docs/image-assets.md)
 
-```powershell
-rtk uv run python .\tools\sync_pubspec_assets.py
-```
+## LLM Image Setup
 
-## Files Not Tracked In Git
-
-These stay local:
-
-- `build/`
-- `.dart_tool/`
-- `artifacts/`
-- `windows/flutter/ephemeral/`
-- `settings.json`
-- `third_party/stockfish/windows/stockfish.exe`
-
-## Stockfish Download
-
-The bundled Windows `stockfish.exe` is not committed because it is too large
-for GitHub.
-
-Download it when needed:
+Create `.env` from the example:
 
 ```powershell
-rtk powershell -ExecutionPolicy Bypass -File .\tools\download_stockfish.ps1
+Copy-Item .env.example .env
 ```
 
-Destination:
+Set at least:
 
 ```text
-third_party\stockfish\windows\stockfish.exe
+OPENAI_API_KEY=...
+OPENAI_BASE_URL=https://api.openai.com/v1
+OPENAI_IMAGE_MODEL=gpt-image-2
 ```
-
-If the bundled binary is missing, development can still fall back to a
-`stockfish` executable on `PATH`.
-
-Environment overrides:
-
-- `CHESS_AI_DESKTOP_STOCKFISH_RELEASE_TAG`
-- `CHESS_AI_DESKTOP_STOCKFISH_ASSET_NAME`
-- `CHESS_AI_DESKTOP_STOCKFISH_DESTINATION_PATH`
-- `CHESS_AI_DESKTOP_APP_PUBLISHER`
 
 ## Packaging
 
-- App icon source: `windows/runner/resources/app_icon.ico`
-- Executable icon wiring: `windows/runner/Runner.rc`
-- Runtime settings path: `settings.json` beside the packaged `.exe`
-- Installer script: `packaging/windows/chess_ai_desktop.iss`
-
-Local release build:
+Release build:
 
 ```powershell
 rtk powershell -ExecutionPolicy Bypass -File .\tools\download_stockfish.ps1
 rtk flutter build windows --release
 ```
 
-## GitHub Actions
+Packaging-related files:
+
+- `packaging/windows/chess_ai_desktop.iss`
+- `windows/runner/resources/app_icon.ico`
+- `windows/runner/Runner.rc`
+
+## Local Files Not Tracked In Git
+
+These are expected to stay local:
+
+- `build/`
+- `.dart_tool/`
+- `artifacts/`
+- `generated_images/`
+- `windows/flutter/ephemeral/`
+- `settings.json`
+- `third_party/stockfish/windows/stockfish.exe`
+
+## CI
 
 - `.github/workflows/ci.yml`
-  - Runs formatting, `flutter analyze`, and `flutter test`
+  - Runs formatting, analysis, and tests
 - `.github/workflows/release.yml`
-  - Builds tagged Windows releases
-  - Downloads Stockfish during CI
-  - Produces a portable zip and installer
-  - Publishes artifacts to GitHub Releases
-
-## Clean Removal
-
-To fully remove local app data and build output:
-
-1. Close the app.
-2. Delete local settings:
-
-```powershell
-Remove-Item ".\settings.json" -Force
-```
-
-3. Delete build output:
-
-```powershell
-Remove-Item ".\build" -Recurse -Force
-```
-
-4. Optionally clear Flutter-generated metadata:
-
-```powershell
-rtk flutter clean
-```
+  - Builds tagged Windows releases and release artifacts
 
 ## Notes
 
-- Android warnings from `flutter doctor` are irrelevant for this Windows-first
-  phase
-- Keep the bundled asset license notice when packaging
+- This repo is Windows-first
+- Android warnings from `flutter doctor` are not relevant for the current target
+- When asset folders under `assets/chess/pieces/` change, rerun:
+
+```powershell
+rtk uv run python .\tools\sync_pubspec_assets.py
+```
