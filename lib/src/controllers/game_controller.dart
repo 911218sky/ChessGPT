@@ -79,6 +79,8 @@ class GameController extends Notifier<GameState> {
     if (!_isCurrentSession(sessionId)) {
       return;
     }
+    final openingLine = _openingLine(sessionConfig);
+    final coachOpeningLine = _coachOpeningLine(sessionConfig);
     state = GameState.initial(config: sessionConfig).copyWith(
       initialized: true,
       hardwareProfile: _hardwareProfile,
@@ -88,15 +90,15 @@ class GameController extends Notifier<GameState> {
         aiThinking: false,
         coachThinking: false,
       ),
-      opponentMessage: _openingLine(sessionConfig),
-      coachMessage: _coachOpeningLine(sessionConfig),
+      opponentMessage: openingLine,
+      coachMessage: coachOpeningLine,
       opponentMessageSource: sessionConfig.llm.enabled
           ? DialogueMessageSource.fallback
           : DialogueMessageSource.disabled,
       coachMessageSource: sessionConfig.llm.enabled
           ? DialogueMessageSource.fallback
           : DialogueMessageSource.disabled,
-      eventLog: [_openingLine(sessionConfig)],
+      eventLog: [openingLine],
       timeoutWinner: null,
       opponentAnalysis: null,
       errorMessage: null,

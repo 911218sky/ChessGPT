@@ -1,7 +1,7 @@
 name: chess_ai_desktop
 description: "Windows-first Flutter desktop chess AI project with local engine play and optional LLM banter."
 publish_to: "none"
-version: 1.2.0+3
+version: 1.2.1+4
 
 environment:
   sdk: ^3.11.5

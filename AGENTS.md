@@ -4,6 +4,51 @@ Use this file as the project-level entry point when working inside `chess_ai_des
 
 Start here, then open the task-relevant docs and source files.
 
+## CodeGraph First
+
+This project uses a lib-only CodeGraph workspace at repo-root
+`.codegraph-lib/`. When the `codegraph_*` MCP tools are available, resolve that
+directory to an absolute path and pass it as `projectPath` on every CodeGraph
+tool call. Do not query the repo root with CodeGraph for this project.
+
+Prefer this workflow on non-trivial code tasks:
+
+1. Start with `codegraph_context` for the user task or subsystem, with
+   `projectPath=<absolute repo-root/.codegraph-lib>`
+2. Use `codegraph_search` to locate symbols by name
+3. Use `codegraph_callers`, `codegraph_callees`, or `codegraph_trace` to follow
+   behavior and data flow inside `lib/`
+4. Use `codegraph_impact` or `codegraph_affected` before shared refactors or
+   risky edits in `lib/`
+5. Open concrete files only after CodeGraph has narrowed the scope
+
+Use native `rg` or direct file reads only when you need literal text matches:
+
+- copy strings
+- comments
+- logs
+- asset names
+- raw config text
+- anything outside `lib/` such as `test/`, `docs/`, `tools/`, `windows/`, or
+  asset trees
+
+Rules:
+
+- Do not start symbol lookup with grep when `codegraph_search` can answer it
+- Do not re-verify CodeGraph structural results with grep unless the index is
+  stale or the question is about raw text
+- Before opening many source files, spend 1-3 CodeGraph calls to narrow the
+  search unless the task is docs-only
+- After `lib/` source edits, allow the watcher to catch up or run
+  `rtk proxy codegraph sync .codegraph-lib`
+- If CodeGraph is missing or stale, use:
+
+```powershell
+rtk proxy codegraph status .codegraph-lib
+rtk proxy codegraph sync .codegraph-lib
+rtk proxy codegraph init -i .codegraph-lib
+```
+
 ## Read In This Order
 
 1. `../AGENTS.md`

@@ -592,7 +592,7 @@ int _llmUsageStatsHash(LlmUsageStats stats) {
   );
 }
 
-class _ControlPanelTabPage extends StatefulWidget {
+class _ControlPanelTabPage extends StatelessWidget {
   const _ControlPanelTabPage({
     required this.index,
     required this.state,
@@ -670,67 +670,60 @@ class _ControlPanelTabPage extends StatefulWidget {
   final Future<void> Function() onResetPreferencesPressed;
 
   @override
-  State<_ControlPanelTabPage> createState() => _ControlPanelTabPageState();
-}
-
-class _ControlPanelTabPageState extends State<_ControlPanelTabPage> {
-  @override
   Widget build(BuildContext context) {
-    switch (widget.index) {
+    switch (index) {
       case 0:
         return BotsTab(
-          state: widget.state,
-          currentProfile: widget.currentProfile,
-          onPersonaChanged: widget.onPersonaChanged,
+          state: state,
+          currentProfile: currentProfile,
+          onPersonaChanged: onPersonaChanged,
           onProfileSelected: _applyProfile,
         );
       case 1:
         return MatchTab(
-          state: widget.state,
-          onDifficultyChanged: widget.onDifficultyChanged,
-          onOpponentDepthChanged: widget.onOpponentDepthChanged,
-          onTeacherDepthChanged: widget.onTeacherDepthChanged,
-          onEngineResourcesChanged: widget.onEngineResourcesChanged,
-          onTimeControlChanged: widget.onTimeControlChanged,
-          onPlayerSideChanged: widget.onPlayerSideChanged,
-          onHintModeChanged: widget.onHintModeChanged,
-          onCandidateLineCountChanged: widget.onCandidateLineCountChanged,
-          onAppTextScalePercentChanged: widget.onAppTextScalePercentChanged,
-          onOpenAiPanelPressed: widget.onOpenAiPanelPressed,
-          onBoardThemeChanged: widget.onBoardThemeChanged,
-          onLocaleChanged: widget.onLocaleChanged,
-          onRematchPressed: widget.onRematchPressed,
-          onResetPreferencesPressed: widget.onResetPreferencesPressed,
+          state: state,
+          onDifficultyChanged: onDifficultyChanged,
+          onOpponentDepthChanged: onOpponentDepthChanged,
+          onTeacherDepthChanged: onTeacherDepthChanged,
+          onEngineResourcesChanged: onEngineResourcesChanged,
+          onTimeControlChanged: onTimeControlChanged,
+          onPlayerSideChanged: onPlayerSideChanged,
+          onHintModeChanged: onHintModeChanged,
+          onCandidateLineCountChanged: onCandidateLineCountChanged,
+          onAppTextScalePercentChanged: onAppTextScalePercentChanged,
+          onOpenAiPanelPressed: onOpenAiPanelPressed,
+          onBoardThemeChanged: onBoardThemeChanged,
+          onLocaleChanged: onLocaleChanged,
+          onRematchPressed: onRematchPressed,
+          onResetPreferencesPressed: onResetPreferencesPressed,
         );
       case 2:
-        return ReviewTab(state: widget.state);
+        return ReviewTab(state: state);
       case 3:
         return CoachTab(
-          state: widget.state,
-          onPersonaChanged: widget.onPersonaChanged,
-          onCoachPersonaChanged: widget.onCoachPersonaChanged,
-          onTauntLevelChanged: widget.onTauntLevelChanged,
+          state: state,
+          onPersonaChanged: onPersonaChanged,
+          onCoachPersonaChanged: onCoachPersonaChanged,
+          onTauntLevelChanged: onTauntLevelChanged,
         );
       case 4:
         return LlmTab(
-          state: widget.state,
-          onLlmEnabledChanged: widget.onLlmEnabledChanged,
-          onLlmProviderKindChanged: widget.onLlmProviderKindChanged,
-          onPersonaChanged: widget.onPersonaChanged,
-          onCoachPersonaChanged: widget.onCoachPersonaChanged,
-          onLlmProviderChanged: widget.onLlmProviderChanged,
-          onLlmBaseUrlChanged: widget.onLlmBaseUrlChanged,
-          onLlmModelChanged: widget.onLlmModelChanged,
-          onLlmApiKeyChanged: widget.onLlmApiKeyChanged,
-          onLlmIdleBanterEnabledChanged: widget.onLlmIdleBanterEnabledChanged,
-          onLlmIdleBanterMinSecondsChanged:
-              widget.onLlmIdleBanterMinSecondsChanged,
-          onLlmIdleBanterMaxSecondsChanged:
-              widget.onLlmIdleBanterMaxSecondsChanged,
-          onResetLlmStatsPressed: widget.onResetLlmStatsPressed,
-          onTestLlmPressed: widget.onTestLlmPressed,
-          onFetchLlmModelsPressed: widget.onFetchLlmModelsPressed,
-          onResetLlmPressed: widget.onResetLlmPressed,
+          state: state,
+          onLlmEnabledChanged: onLlmEnabledChanged,
+          onLlmProviderKindChanged: onLlmProviderKindChanged,
+          onPersonaChanged: onPersonaChanged,
+          onCoachPersonaChanged: onCoachPersonaChanged,
+          onLlmProviderChanged: onLlmProviderChanged,
+          onLlmBaseUrlChanged: onLlmBaseUrlChanged,
+          onLlmModelChanged: onLlmModelChanged,
+          onLlmApiKeyChanged: onLlmApiKeyChanged,
+          onLlmIdleBanterEnabledChanged: onLlmIdleBanterEnabledChanged,
+          onLlmIdleBanterMinSecondsChanged: onLlmIdleBanterMinSecondsChanged,
+          onLlmIdleBanterMaxSecondsChanged: onLlmIdleBanterMaxSecondsChanged,
+          onResetLlmStatsPressed: onResetLlmStatsPressed,
+          onTestLlmPressed: onTestLlmPressed,
+          onFetchLlmModelsPressed: onFetchLlmModelsPressed,
+          onResetLlmPressed: onResetLlmPressed,
         );
       default:
         return const SizedBox.shrink();
@@ -738,12 +731,12 @@ class _ControlPanelTabPageState extends State<_ControlPanelTabPage> {
   }
 
   Future<void> _applyProfile(BotProfile profile) {
-    final config = widget.state.config.copyWith(
+    final config = state.config.copyWith(
       difficulty: profile.difficulty,
       botProfileName: profile.name,
       tauntLevel: profile.tauntLevel,
     );
-    return widget.onNewGamePressed(config: config);
+    return onNewGamePressed(config: config);
   }
 }
 

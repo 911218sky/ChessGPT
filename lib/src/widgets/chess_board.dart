@@ -240,55 +240,43 @@ class _ChessBoardState extends State<ChessBoard> {
         .join('|');
   }
 
-  Map<Square, Set<Square>> _acceptedDragSourcesFor(Position position) {
+  void _syncLegalMoveCaches() {
     final sourcesByTarget = <Square, Set<Square>>{};
-    final legalMoves = makeLegalMoves(position);
+    final actionable = <Square>{};
+    final legalMoves = makeLegalMoves(widget.position);
     for (final entry in legalMoves.entries) {
+      if (entry.value.isEmpty) {
+        continue;
+      }
+      actionable.add(entry.key);
       for (final target in entry.value) {
         (sourcesByTarget[target] ??= <Square>{}).add(entry.key);
       }
     }
-    return sourcesByTarget;
-  }
 
-  Set<Square> _actionableSquaresFor(Position position) {
-    final actionable = <Square>{};
-    final legalMoves = makeLegalMoves(position);
-    for (final entry in legalMoves.entries) {
-      if (entry.value.isNotEmpty) {
-        actionable.add(entry.key);
-      }
-    }
-    return actionable;
-  }
-
-  void _syncLegalMoveCaches() {
-    _acceptedDragSources = _acceptedDragSourcesFor(widget.position);
-    _actionableSquares = _actionableSquaresFor(widget.position);
+    _acceptedDragSources = sourcesByTarget;
+    _actionableSquares = actionable;
   }
 
   Square? _losingKingSquareFor(Position position, Side? losingSide) {
     if (losingSide == null) {
       return null;
     }
-    final board = position.board;
-    for (final square in Square.values) {
-      final current = board.pieceAt(square);
-      if (current?.color == losingSide && current?.role == Role.king) {
-        return square;
-      }
-    }
-    return null;
+    return _kingSquareFor(position, losingSide);
   }
 
   Square? _checkedKingSquareFor(Position position) {
     if (!position.isCheck) {
       return null;
     }
+    return _kingSquareFor(position, position.turn);
+  }
+
+  Square? _kingSquareFor(Position position, Side side) {
     final board = position.board;
     for (final square in Square.values) {
       final current = board.pieceAt(square);
-      if (current?.color == position.turn && current?.role == Role.king) {
+      if (current?.color == side && current?.role == Role.king) {
         return square;
       }
     }
@@ -478,6 +466,14 @@ class _HintLinesPainter extends CustomPainter {
   final BoardThemeStyle theme;
   final double progress;
 
+  static const _palette = <Color>[
+    Color(0xFF9BFF88),
+    Color(0xFF57B7FF),
+    Color(0xFFFFA94F),
+    Color(0xFFE87BFF),
+    Color(0xFFFF6B8A),
+  ];
+
   @override
   void paint(Canvas canvas, Size size) {
     if (moves.isEmpty) {
@@ -493,19 +489,12 @@ class _HintLinesPainter extends CustomPainter {
                   ? _clampUnit(safeProgress * 2)
                   : _clampUnit((1 - safeProgress) * 2),
             );
-    final palette = <Color>[
-      const Color(0xFF9BFF88),
-      const Color(0xFF57B7FF),
-      const Color(0xFFFFA94F),
-      const Color(0xFFE87BFF),
-      const Color(0xFFFF6B8A),
-    ];
 
     for (var index = moves.length - 1; index >= 0; index--) {
       final move = moves[index];
       final from = _centerFor(move.move.from, cell);
       final to = _centerFor(move.move.to, cell);
-      final color = palette[(move.rank - 1) % palette.length];
+      final color = _palette[(move.rank - 1) % _palette.length];
       final emphasis = index == 0 ? 1.0 : (1 - (index * 0.12)).clamp(0.56, 0.9);
 
       _drawSquareGlow(
