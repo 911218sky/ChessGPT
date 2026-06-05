@@ -156,6 +156,9 @@ LlmSettings _settings(
     provider: 'Test',
     baseUrl: server.baseUrl,
     model: model,
+    credentialMode: apiKey.isEmpty
+        ? LlmCredentialMode.defaultProxy
+        : LlmCredentialMode.customApiKey,
     apiKey: apiKey,
   );
 }

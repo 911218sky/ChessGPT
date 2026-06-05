@@ -1,6 +1,7 @@
 # chess_ai_desktop Agent Guide
 
-Use this file as the project-level entry point when working inside `chess_ai_desktop`.
+Use this file as the project-level entry point when working inside
+`chess_ai_desktop`.
 
 Start here, then open the task-relevant docs and source files.
 
@@ -51,7 +52,7 @@ rtk proxy codegraph init -i .codegraph-lib
 
 ## Read In This Order
 
-1. `../AGENTS.md`
+1. `/home/sbplab/sky/agents/AGENTS.md`
    - Workspace-wide rules
    - The required three-phase workflow
    - `rtk` command expectations
@@ -65,7 +66,9 @@ rtk proxy codegraph init -i .codegraph-lib
 
 ## What This Project Is
 
-This is a Windows-first Flutter desktop chess app.
+This is a Flutter chess app with desktop and web targets. Desktop remains the
+primary experience, but web support must stay buildable and avoid platform-only
+APIs in shared code.
 
 Core product areas:
 
@@ -74,6 +77,7 @@ Core product areas:
 - Optional LLM commentary and banter
 - Board themes and board textures
 - Match settings and local preference persistence
+- Platform-specific desktop and web service implementations
 
 When in doubt, optimize for the actual play experience:
 
@@ -100,7 +104,13 @@ Open these first for most tasks:
 - `lib/src/theme/board_theme.dart`
   - Theme registry, labels, and asset mapping
 - `lib/src/services/stockfish_service.dart`
-  - Engine process setup and hardware/resource defaults
+  - Conditional service entry point for engine analysis
+- `lib/src/services/stockfish_service_io.dart`
+  - Desktop engine process setup and hardware/resource defaults
+- `lib/src/services/stockfish_service_web.dart`
+  - Web-safe engine fallback behavior
+- `lib/src/chess/chess.dart`
+  - Conditional chess package and compatibility helper exports
 
 ## Task Routing
 
@@ -150,7 +160,11 @@ Read first:
 
 - `lib/src/controllers/game_controller.dart`
 - `lib/src/models/session_config.dart`
+- `lib/src/chess/chess.dart`
 - `lib/src/services/stockfish_service.dart`
+- `lib/src/services/stockfish_service_io.dart`
+- `lib/src/services/stockfish_service_web.dart`
+- `lib/src/services/llm_commentary_service.dart`
 - related tests under `test/controllers/`, `test/services/`, and `test/widgets/`
 
 Check for:
@@ -160,6 +174,30 @@ Check for:
 - role/personality separation
 - English and Traditional Chinese copy quality
 - accidental mojibake or encoding damage
+
+### Web support changes
+
+Read first:
+
+- `lib/src/chess/chess.dart`
+- `lib/src/chess/chess_compat_io.dart`
+- `lib/src/chess/chess_compat_web.dart`
+- `lib/src/services/*_io.dart`
+- `lib/src/services/*_web.dart`
+- `web/`
+
+Rules:
+
+- Keep shared `lib/` code free of direct `dart:io` imports
+- Use conditional exports for platform-specific services
+- Import chess APIs through `package:chess_ai_desktop/src/chess/chess.dart`
+  instead of importing `package:dartchess/dartchess.dart` directly
+- Put API differences between `dartchess` and `dartchess_webok` behind
+  `lib/src/chess/chess_compat_*.dart`
+- Web implementations must fail gracefully when a desktop-only capability is not
+  available in the browser
+- Validate web support with `flutter build web`; `flutter analyze` can miss
+  web-only conditional export failures
 
 ## Required Workflow
 
@@ -181,10 +219,19 @@ rtk flutter analyze
 rtk flutter test
 ```
 
+For changes that touch shared Flutter code, platform services, chess logic, or
+web assets, also run:
+
+```powershell
+rtk flutter build web
+```
+
 Notes:
 
 - If you only changed docs or non-Dart files, skip meaningless formatting commands, but still run the relevant project validation unless the user says otherwise
 - Prefer focused tests during iteration, then run the full suite before finishing
+- Prefer `flutter build web` for web validation. Start `flutter run -d
+  web-server` only when the user asks for a live web server.
 
 ## Things You Must Not Do
 

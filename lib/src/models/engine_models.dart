@@ -48,17 +48,21 @@ const Object _unset = Object();
 
 class EngineHardwareProfile {
   const EngineHardwareProfile({
+    this.runtime = EngineRuntime.nativeProcess,
     required this.cpuThreads,
     required this.memoryMb,
     required this.recommendedThreads,
     required this.recommendedHashMb,
   });
 
+  final EngineRuntime runtime;
   final int cpuThreads;
   final int? memoryMb;
   final int recommendedThreads;
   final int recommendedHashMb;
 }
+
+enum EngineRuntime { nativeProcess, browserWorkerWasm }
 
 class EngineLine {
   const EngineLine({

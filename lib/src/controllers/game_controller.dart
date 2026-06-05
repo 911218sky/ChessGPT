@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:math' as math;
 
-import 'package:dartchess/dartchess.dart';
+import 'package:chess_ai_desktop/src/chess/chess.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../i18n/app_localizations.dart';
@@ -333,6 +333,12 @@ class GameController extends Notifier<GameState> {
 
   void updateLlmModel(String model) {
     final llm = state.config.llm.copyWith(model: model);
+    state = state.copyWith(config: state.config.copyWith(llm: llm));
+    unawaited(_settingsStore.saveLlmSettings(llm));
+  }
+
+  void updateLlmCredentialMode(LlmCredentialMode credentialMode) {
+    final llm = state.config.llm.copyWith(credentialMode: credentialMode);
     state = state.copyWith(config: state.config.copyWith(llm: llm));
     unawaited(_settingsStore.saveLlmSettings(llm));
   }
@@ -669,7 +675,7 @@ class GameController extends Notifier<GameState> {
       return;
     }
 
-    final legalMap = makeLegalMoves(state.position);
+    final legalMap = state.position.legalMoves;
     final selectedSquare = state.selectedSquare;
 
     if (selectedSquare != null && state.legalTargets.contains(square)) {
@@ -685,7 +691,7 @@ class GameController extends Notifier<GameState> {
 
     state = state.copyWith(
       selectedSquare: square,
-      legalTargets: legalMap[square]?.toSet() ?? const {},
+      legalTargets: legalMap[square]?.squares.toSet() ?? const {},
       errorMessage: null,
     );
   }
@@ -707,9 +713,8 @@ class GameController extends Notifier<GameState> {
     }
 
     var move = NormalMove(from: from, to: to);
-    if (piece.role == Role.pawn &&
-        (to.rank == Rank.first || to.rank == Rank.eighth)) {
-      move = move.withPromotion(Role.queen);
+    if (piece.role == Role.pawn && isPromotionRank(to)) {
+      move = moveWithPromotion(move, Role.queen);
     }
 
     if (!state.position.isLegal(move)) {
@@ -833,7 +838,7 @@ class GameController extends Notifier<GameState> {
         return;
       }
 
-      final move = Move.parse(analysis.bestMoveUci);
+      final move = parseUciMove(analysis.bestMoveUci);
       if (move == null || !state.position.isLegal(move)) {
         throw Exception(
           'Engine produced an illegal move: ${analysis.bestMoveUci}',
@@ -1607,7 +1612,7 @@ class GameController extends Notifier<GameState> {
     var blackKnights = 0;
     var blackPawns = 0;
 
-    for (final square in Square.values) {
+    for (final square in allSquares) {
       final piece = position.board.pieceAt(square);
       if (piece == null || piece.role == Role.king) {
         continue;
@@ -2027,14 +2032,13 @@ class GameController extends Notifier<GameState> {
   }
 
   Move? _fallbackMove(Position position) {
-    final legalMap = makeLegalMoves(position);
+    final legalMap = position.legalMoves;
     for (final entry in legalMap.entries) {
-      for (final target in entry.value) {
+      for (final target in entry.value.squares) {
         var move = NormalMove(from: entry.key, to: target);
         final piece = position.board.pieceAt(entry.key);
-        if (piece?.role == Role.pawn &&
-            (target.rank == Rank.first || target.rank == Rank.eighth)) {
-          move = move.withPromotion(Role.queen);
+        if (piece?.role == Role.pawn && isPromotionRank(target)) {
+          move = moveWithPromotion(move, Role.queen);
         }
         if (position.isLegal(move)) {
           return move;
@@ -2271,38 +2275,58 @@ class GameController extends Notifier<GameState> {
     if (analysis == null) {
       return _coachOpeningLine(activeConfig);
     }
+    final bestMove = analysis.bestMoveUci;
+    final continuation = _principalVariationText(analysis);
+    final continuationText = continuation == null
+        ? switch (strings.locale) {
+            AppLocale.en => 'Then re-check threats and loose pieces.',
+            AppLocale.zhHant => '接著重查威脅與鬆動棋子。',
+          }
+        : switch (strings.locale) {
+            AppLocale.en => 'Line: $continuation.',
+            AppLocale.zhHant => '續著：$continuation。',
+          };
     return switch (strings.locale) {
       AppLocale.en => switch (activeConfig.coachPersona) {
         CoachPersona.kirinKing =>
-          'I see ${analysis.bestMoveUci} as the clean path. Watch the next threat.',
+          'Try $bestMove. $continuationText Watch the next threat.',
         CoachPersona.tacticalTeacher =>
-          'Tactical note: ${analysis.bestMoveUci} asks the most direct question. Check loose pieces first.',
+          'Try $bestMove. $continuationText Check loose pieces and forcing replies.',
         CoachPersona.calmMentor =>
-          'Plan calmly around ${analysis.bestMoveUci}. Improve piece activity before chasing tactics.',
+          'Try $bestMove. $continuationText Improve activity before chasing tactics.',
         CoachPersona.openingArchivist =>
-          'Opening file: ${analysis.bestMoveUci} keeps development coherent and protects the center.',
+          'Try $bestMove. $continuationText It keeps development and center control coherent.',
         CoachPersona.endgameSensei =>
-          'Technique note: ${analysis.bestMoveUci} improves conversion chances by keeping control.',
+          'Try $bestMove. $continuationText Keep control before converting.',
         CoachPersona.blunderDetective =>
-          'Blunder check: ${analysis.bestMoveUci} avoids the main tactical issue. Verify captures.',
+          'Try $bestMove. $continuationText Verify captures and pins before moving.',
         CoachPersona.attackCommander =>
-          'Attack order: ${analysis.bestMoveUci} keeps initiative. Bring one more piece in.',
+          'Try $bestMove. $continuationText Keep initiative and bring one more piece in.',
       },
       AppLocale.zhHant => switch (activeConfig.coachPersona) {
-        CoachPersona.kirinKing => '我看見 ${analysis.bestMoveUci} 是乾淨路線。先看下一個威脅。',
+        CoachPersona.kirinKing => '建議走 $bestMove。$continuationText 先看下一個威脅。',
         CoachPersona.tacticalTeacher =>
-          '戰術筆記：${analysis.bestMoveUci} 最直接施壓。先檢查鬆動棋子。',
-        CoachPersona.calmMentor => '冷靜圍繞 ${analysis.bestMoveUci} 規劃。先改善子力活性。',
+          '建議走 $bestMove。$continuationText 先查鬆動棋子與強制回應。',
+        CoachPersona.calmMentor => '建議走 $bestMove。$continuationText 先改善子力活性。',
         CoachPersona.openingArchivist =>
-          '開局檔案：${analysis.bestMoveUci} 讓出子連貫，也守住中心。',
+          '建議走 $bestMove。$continuationText 出子與中心會更連貫。',
         CoachPersona.endgameSensei =>
-          '殘局技術：${analysis.bestMoveUci} 靠控制力提高轉換機會。',
+          '建議走 $bestMove。$continuationText 先保持控制再轉換。',
         CoachPersona.blunderDetective =>
-          '失誤檢查：${analysis.bestMoveUci} 避開主要戰術問題。再核對吃子。',
+          '建議走 $bestMove。$continuationText 走前核對吃子與牽制。',
         CoachPersona.attackCommander =>
-          '攻擊指令：${analysis.bestMoveUci} 保持先手。再調一枚子加入。',
+          '建議走 $bestMove。$continuationText 保持先手，再調子加入。',
       },
     };
+  }
+
+  String? _principalVariationText(EngineAnalysis analysis) {
+    final pv = analysis.bestLine?.pv;
+    if (pv == null || pv.isEmpty) {
+      return null;
+    }
+    final line = pv.take(4).join(' ');
+    return line.isEmpty ? null : line;
   }
 
   String _liveCommentaryPrompt({
@@ -2319,8 +2343,9 @@ class GameController extends Notifier<GameState> {
         'Latest move: ${move.uci}\n'
         'Played by: ${byPlayer ? 'human player' : 'AI opponent'}\n'
         '${_positionSummary(state.position, strings)}\n'
-        'Private engine candidate, do not quote verbatim: ${analysis?.bestMoveUci ?? 'unknown'}\n'
-        'Private position signal, do not quote verbatim: ${analysis?.evaluationLabel ?? 'unknown'}\n'
+        'Engine candidate for the side to move: ${analysis?.bestMoveUci ?? 'unknown'}\n'
+        'Candidate continuation: ${analysis == null ? 'unknown' : _principalVariationText(analysis) ?? analysis.bestMoveUci}\n'
+        'Position signal: ${analysis?.evaluationLabel ?? 'unknown'}\n'
         '$reviewLine'
         'The line must mention at least one concrete board theme such as king safety, center control, loose pieces, open file, pawn structure, initiative, attack, defense, or endgame conversion.\n'
         'Keep it very compact: one short sentence, or at most two very short bullet points.\n'
@@ -2329,7 +2354,7 @@ class GameController extends Notifier<GameState> {
         'Output only the spoken line. Do not start with a speaker name, role label, colon prefix, or field label.\n'
         'Do not repeat template phrases such as "points to", "evaluation", "score", "depth", "best move", "指向", "評估", "分數", "深度", or "最佳步".\n'
         'Opponent voice rule: never mention engine analysis, evaluation labels, best-move wording, depth, win rate, or exact UCI notation.\n'
-        'Coach voice rule: give practical guidance tied to the current position, and avoid sounding generic.';
+        'Coach voice rule: give practical guidance tied to the current position. You may name the engine candidate exactly if it helps the player know what to try.';
   }
 
   String _openingCommentaryPrompt(
@@ -2358,13 +2383,14 @@ class GameController extends Notifier<GameState> {
     return '${strings.languageInstruction}\n'
         'It is the human player turn.\n'
         '${_positionSummary(state.position, strings)}\n'
-        'Private engine candidate, do not quote verbatim: ${analysis.bestMoveUci}\n'
-        'Private position signal, do not quote verbatim: ${analysis.evaluationLabel}\n'
+        'Recommended move for the human player: ${analysis.bestMoveUci}\n'
+        'Candidate continuation: ${_principalVariationText(analysis) ?? analysis.bestMoveUci}\n'
+        'Position signal: ${analysis.evaluationLabel}\n'
         '$reviewLine'
-        'Give one useful teacher-style hint tied to the current position.\n'
-        'Name a concrete strategic or tactical theme and tell the player what to watch for next.\n'
-        'Keep it to one short sentence, or at most two tiny bullet points. Do not dump a full line unless the tactic is forced.\n'
-        'Target under 22 English words or under 28 Chinese characters. Light markdown is allowed when it makes the hint clearer.\n'
+        'Give a useful teacher-style hint tied to the current position.\n'
+        'Tell the player what move to consider, why it helps, and what to check after it.\n'
+        'Use one compact sentence or two tiny bullets. You may name the recommended UCI move exactly.\n'
+        'Target under 32 English words or under 42 Chinese characters. Light markdown is allowed when it makes the hint clearer.\n'
         'Output only the spoken hint. Do not start with a speaker name, role label, colon prefix, or field label.\n'
         'Do not repeat template phrases such as "points to", "evaluation", "score", "depth", "best move", "指向", "評估", "分數", "深度", or "最佳步".';
   }
@@ -2469,9 +2495,9 @@ class GameController extends Notifier<GameState> {
     };
     final rule = switch (strings.locale) {
       AppLocale.en =>
-        'Keep replies under 22 words. Be useful to a chess learner and cite one concrete board clue such as king safety, tactical threats, structure, initiative, piece activity, or move quality. Output only the hint itself, with no speaker name or colon prefix. Light markdown is allowed. Reply in English.',
+        'Keep replies under 32 words. Be useful to a chess learner: name the move to consider, one concrete board clue, and the next check after the move. Output only the hint itself, with no speaker name or colon prefix. Light markdown is allowed. Reply in English.',
       AppLocale.zhHant =>
-        '回覆少於 28 個中文字。要對學棋者有幫助，並引用一個具體局面線索，例如王安全、戰術威脅、結構、先手、子力活性或走法品質。只輸出提示本體，不要角色名或冒號前綴。可使用簡潔 markdown。請一律使用繁體中文。',
+        '回覆少於 42 個中文字。要對學棋者有幫助：說出可考慮的走法、一個具體局面線索，以及走後要檢查什麼。只輸出提示本體，不要角色名或冒號前綴。可使用簡潔 markdown。請一律使用繁體中文。',
     };
     return '$persona $rule';
   }

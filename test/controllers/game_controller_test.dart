@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:dartchess/dartchess.dart';
+import 'package:chess_ai_desktop/src/chess/chess.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -307,6 +307,36 @@ void main() {
     expect(stockfish.analysisRequests.single.settings.elo, isNull);
   });
 
+  test('coach fallback gives a concrete move and continuation', () async {
+    final stockfish = _FakeStockfishService();
+    final container = _container(stockfish: stockfish);
+    addTearDown(container.dispose);
+
+    final controller = container.read(gameControllerProvider.notifier);
+    stockfish.completeNextHardware(_hardwareProfile());
+    await controller.startNewGame(
+      config: GameSessionConfig.defaults().copyWith(
+        playerSide: Side.white,
+        hintMode: HintMode.bestMove,
+        llm: const LlmSettings(enabled: false),
+      ),
+    );
+    await Future<void>.delayed(Duration.zero);
+
+    expect(stockfish.analysisRequests, hasLength(1));
+    stockfish.analysisRequests.single.complete(
+      _analysis('e2e4', pv: const ['e2e4', 'e7e5', 'g1f3', 'b8c6']),
+    );
+    await Future<void>.delayed(Duration.zero);
+
+    final state = container.read(gameControllerProvider);
+    expect(state.coachMessage, contains('e2e4'));
+    expect(state.coachMessage, contains('e7e5'));
+    expect(state.coachMessage, contains('g1f3'));
+    expect(state.coachMessage, contains('b8c6'));
+    expect(state.coachMessage, anyOf(contains('Check'), contains('Watch')));
+  });
+
   test('direct dropped human move uses the normal move flow', () async {
     final stockfish = _FakeStockfishService();
     final container = _container(stockfish: stockfish);
@@ -522,6 +552,20 @@ void main() {
     expect(settings.idleBanterEnabled, isTrue);
     expect(settings.idleBanterMinSeconds, 10);
     expect(settings.idleBanterMaxSeconds, 45);
+    expect(settings.credentialMode, LlmCredentialMode.defaultProxy);
+  });
+
+  test('LLM credential mode can switch to a typed API key', () {
+    final container = _container();
+    addTearDown(container.dispose);
+
+    final controller = container.read(gameControllerProvider.notifier);
+    controller.updateLlmCredentialMode(LlmCredentialMode.customApiKey);
+    controller.updateLlmApiKey('typed-key');
+
+    final llm = container.read(gameControllerProvider).config.llm;
+    expect(llm.credentialMode, LlmCredentialMode.customApiKey);
+    expect(llm.apiKey, 'typed-key');
   });
 
   test('Kimi Code provider preset applies coding endpoint defaults', () {
@@ -655,13 +699,13 @@ Future<void> _tapMove(GameController controller, Square from, Square to) async {
   await controller.tapSquare(to);
 }
 
-Square _square(int file, int rank) => Square.fromCoords(File(file), Rank(rank));
+Square _square(int file, int rank) => squareFromCoords(file, rank);
 
 ({Square from, Square to, String uci}) _firstLegalMove(GameState state) {
-  final legalMoves = makeLegalMoves(state.position);
+  final legalMoves = state.position.legalMoves;
   for (final entry in legalMoves.entries) {
     if (entry.value.isNotEmpty) {
-      final to = entry.value.first;
+      final to = entry.value.squares.first;
       return (
         from: entry.key,
         to: to,
@@ -708,7 +752,8 @@ EngineHardwareProfile _hardwareProfile({int threads = 2}) {
   );
 }
 
-EngineAnalysis _analysis(String bestMove) {
+EngineAnalysis _analysis(String bestMove, {List<String>? pv}) {
+  final principalVariation = pv ?? [bestMove];
   return EngineAnalysis(
     bestMoveUci: bestMove,
     depth: 1,
@@ -717,7 +762,7 @@ EngineAnalysis _analysis(String bestMove) {
       EngineLine(
         multipv: 1,
         moveUci: bestMove,
-        pv: [bestMove],
+        pv: principalVariation,
         depth: 1,
         scoreType: 'cp',
         score: 20,

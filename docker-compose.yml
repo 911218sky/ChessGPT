@@ -1,0 +1,11 @@
+services:
+  chess-ai-web:
+    container_name: sky-chess-ai-web
+    image: ghcr.io/911218sky/chess_ai_desktop:web-support
+    pull_policy: always
+    environment:
+      NGINX_LLM_PROXY_AUTHORIZATION: ${NGINX_LLM_PROXY_AUTHORIZATION:-}
+      NGINX_LLM_PROXY_TARGET: ${NGINX_LLM_PROXY_TARGET:-https://www.inroi.shop/v1/}
+    ports:
+      - "5432:80"
+    restart: unless-stopped

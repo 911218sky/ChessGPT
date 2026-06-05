@@ -1,6 +1,6 @@
 import 'dart:math' as math;
 
-import 'package:dartchess/dartchess.dart';
+import 'package:chess_ai_desktop/src/chess/chess.dart';
 import 'package:flutter/material.dart';
 
 import '../i18n/app_localizations.dart';
@@ -45,6 +45,7 @@ class ControlPanel extends StatefulWidget {
     required this.onLlmProviderChanged,
     required this.onLlmBaseUrlChanged,
     required this.onLlmModelChanged,
+    required this.onLlmCredentialModeChanged,
     required this.onLlmApiKeyChanged,
     required this.onLlmIdleBanterEnabledChanged,
     required this.onLlmIdleBanterMinSecondsChanged,
@@ -81,6 +82,7 @@ class ControlPanel extends StatefulWidget {
   final ValueChanged<String> onLlmProviderChanged;
   final ValueChanged<String> onLlmBaseUrlChanged;
   final ValueChanged<String> onLlmModelChanged;
+  final ValueChanged<LlmCredentialMode> onLlmCredentialModeChanged;
   final ValueChanged<String> onLlmApiKeyChanged;
   final ValueChanged<bool> onLlmIdleBanterEnabledChanged;
   final ValueChanged<int> onLlmIdleBanterMinSecondsChanged;
@@ -357,6 +359,8 @@ class _ControlPanelState extends State<ControlPanel>
                             onLlmProviderChanged: widget.onLlmProviderChanged,
                             onLlmBaseUrlChanged: widget.onLlmBaseUrlChanged,
                             onLlmModelChanged: widget.onLlmModelChanged,
+                            onLlmCredentialModeChanged:
+                                widget.onLlmCredentialModeChanged,
                             onLlmApiKeyChanged: widget.onLlmApiKeyChanged,
                             onLlmIdleBanterEnabledChanged:
                                 widget.onLlmIdleBanterEnabledChanged,
@@ -555,7 +559,8 @@ bool _sameStrings(List<String> a, List<String> b) {
 }
 
 bool _sameHardwareProfile(EngineHardwareProfile? a, EngineHardwareProfile? b) {
-  return a?.cpuThreads == b?.cpuThreads &&
+  return a?.runtime == b?.runtime &&
+      a?.cpuThreads == b?.cpuThreads &&
       a?.memoryMb == b?.memoryMb &&
       a?.recommendedThreads == b?.recommendedThreads &&
       a?.recommendedHashMb == b?.recommendedHashMb;
@@ -563,6 +568,7 @@ bool _sameHardwareProfile(EngineHardwareProfile? a, EngineHardwareProfile? b) {
 
 int _hardwareProfileHash(EngineHardwareProfile? profile) {
   return Object.hash(
+    profile?.runtime,
     profile?.cpuThreads,
     profile?.memoryMb,
     profile?.recommendedThreads,
@@ -621,6 +627,7 @@ class _ControlPanelTabPage extends StatelessWidget {
     required this.onLlmProviderChanged,
     required this.onLlmBaseUrlChanged,
     required this.onLlmModelChanged,
+    required this.onLlmCredentialModeChanged,
     required this.onLlmApiKeyChanged,
     required this.onLlmIdleBanterEnabledChanged,
     required this.onLlmIdleBanterMinSecondsChanged,
@@ -659,6 +666,7 @@ class _ControlPanelTabPage extends StatelessWidget {
   final ValueChanged<String> onLlmProviderChanged;
   final ValueChanged<String> onLlmBaseUrlChanged;
   final ValueChanged<String> onLlmModelChanged;
+  final ValueChanged<LlmCredentialMode> onLlmCredentialModeChanged;
   final ValueChanged<String> onLlmApiKeyChanged;
   final ValueChanged<bool> onLlmIdleBanterEnabledChanged;
   final ValueChanged<int> onLlmIdleBanterMinSecondsChanged;
@@ -716,6 +724,7 @@ class _ControlPanelTabPage extends StatelessWidget {
           onLlmProviderChanged: onLlmProviderChanged,
           onLlmBaseUrlChanged: onLlmBaseUrlChanged,
           onLlmModelChanged: onLlmModelChanged,
+          onLlmCredentialModeChanged: onLlmCredentialModeChanged,
           onLlmApiKeyChanged: onLlmApiKeyChanged,
           onLlmIdleBanterEnabledChanged: onLlmIdleBanterEnabledChanged,
           onLlmIdleBanterMinSecondsChanged: onLlmIdleBanterMinSecondsChanged,

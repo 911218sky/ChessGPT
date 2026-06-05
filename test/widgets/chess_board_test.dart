@@ -1,4 +1,4 @@
-import 'package:dartchess/dartchess.dart';
+import 'package:chess_ai_desktop/src/chess/chess.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -247,4 +247,4 @@ List<EngineLine> _hintLines() {
   ];
 }
 
-Square _square(int file, int rank) => Square.fromCoords(File(file), Rank(rank));
+Square _square(int file, int rank) => squareFromCoords(file, rank);

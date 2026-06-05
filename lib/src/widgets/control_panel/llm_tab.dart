@@ -19,6 +19,7 @@ class LlmTab extends StatefulWidget {
     required this.onLlmProviderChanged,
     required this.onLlmBaseUrlChanged,
     required this.onLlmModelChanged,
+    required this.onLlmCredentialModeChanged,
     required this.onLlmApiKeyChanged,
     required this.onLlmIdleBanterEnabledChanged,
     required this.onLlmIdleBanterMinSecondsChanged,
@@ -37,6 +38,7 @@ class LlmTab extends StatefulWidget {
   final ValueChanged<String> onLlmProviderChanged;
   final ValueChanged<String> onLlmBaseUrlChanged;
   final ValueChanged<String> onLlmModelChanged;
+  final ValueChanged<LlmCredentialMode> onLlmCredentialModeChanged;
   final ValueChanged<String> onLlmApiKeyChanged;
   final ValueChanged<bool> onLlmIdleBanterEnabledChanged;
   final ValueChanged<int> onLlmIdleBanterMinSecondsChanged;
@@ -176,10 +178,29 @@ class _LlmTabState extends State<LlmTab> {
                   ),
                 ],
                 const SizedBox(height: 14),
+                SegmentedPicker<LlmCredentialMode>(
+                  label: strings.credentialMode,
+                  value: state.config.llm.credentialMode,
+                  options: LlmCredentialMode.values,
+                  itemLabel: (item) => item.localizedLabel(strings),
+                  onChanged: widget.onLlmCredentialModeChanged,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  strings.defaultCredentialDescription,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Colors.white60,
+                    height: 1.3,
+                  ),
+                ),
+                const SizedBox(height: 14),
                 LabeledTextField(
                   label: strings.apiKey,
                   controller: _apiKeyController,
                   obscureText: true,
+                  readOnly:
+                      state.config.llm.credentialMode ==
+                      LlmCredentialMode.defaultProxy,
                   onChanged: widget.onLlmApiKeyChanged,
                   hintText: strings.apiKeyHint(
                     state.config.llm.providerKind.apiKeyHint,

@@ -1,4 +1,4 @@
-import 'package:dartchess/dartchess.dart';
+import 'package:chess_ai_desktop/src/chess/chess.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -713,6 +713,7 @@ Future<void> _pumpControlPanel(
             onLlmProviderChanged: (_) {},
             onLlmBaseUrlChanged: (_) {},
             onLlmModelChanged: (_) {},
+            onLlmCredentialModeChanged: (_) {},
             onLlmApiKeyChanged: (_) {},
             onLlmIdleBanterEnabledChanged:
                 onLlmIdleBanterEnabledChanged ?? (_) {},

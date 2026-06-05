@@ -1,7 +1,8 @@
-import 'package:dartchess/dartchess.dart';
+import 'package:chess_ai_desktop/src/chess/chess.dart';
 import 'package:flutter/material.dart';
 
 import '../../i18n/app_localizations.dart';
+import '../../models/engine_models.dart' as engine_models;
 import '../../models/game_state.dart';
 import '../../models/session_config.dart';
 import '../../theme/board_theme.dart';
@@ -264,7 +265,12 @@ class _EngineResourceControls extends StatelessWidget {
     final profile = state.hardwareProfile;
     final detected = profile == null
         ? '--'
-        : '${profile.cpuThreads} CPU / ${profile.memoryMb == null ? '--' : '${(profile.memoryMb! / 1024).toStringAsFixed(1)} GB'}';
+        : switch (profile.runtime) {
+            engine_models.EngineRuntime.browserWorkerWasm =>
+              '${strings.browserEngineRuntime} / ${strings.browserEngineHardware(profile.cpuThreads)}',
+            engine_models.EngineRuntime.nativeProcess =>
+              '${profile.cpuThreads} CPU / ${profile.memoryMb == null ? '--' : '${(profile.memoryMb! / 1024).toStringAsFixed(1)} GB'}',
+          };
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

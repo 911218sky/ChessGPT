@@ -1,9 +1,10 @@
 import 'dart:math' as math;
-import 'package:dartchess/dartchess.dart';
+import 'package:chess_ai_desktop/src/chess/chess.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'controllers/game_controller.dart';
 import 'i18n/app_localizations.dart';
@@ -90,10 +91,9 @@ class ChessAIDesktopApp extends ConsumerWidget {
         colorScheme: colorScheme,
         useMaterial3: true,
         scaffoldBackgroundColor: AppColors.background,
-        textTheme: ThemeData.dark(useMaterial3: true).textTheme.apply(
-          bodyColor: AppColors.text,
-          displayColor: AppColors.text,
-        ),
+        textTheme: GoogleFonts.notoSansTcTextTheme(
+          ThemeData.dark(useMaterial3: true).textTheme,
+        ).apply(bodyColor: AppColors.text, displayColor: AppColors.text),
         inputDecorationTheme: InputDecorationTheme(
           filled: true,
           fillColor: AppColors.field,
@@ -223,6 +223,8 @@ class _ChessHomePageState extends ConsumerState<ChessHomePage> {
                   onLlmProviderChanged: controller.updateLlmProvider,
                   onLlmBaseUrlChanged: controller.updateLlmBaseUrl,
                   onLlmModelChanged: controller.updateLlmModel,
+                  onLlmCredentialModeChanged:
+                      controller.updateLlmCredentialMode,
                   onLlmApiKeyChanged: controller.updateLlmApiKey,
                   onLlmIdleBanterEnabledChanged:
                       controller.updateLlmIdleBanterEnabled,
@@ -391,6 +393,7 @@ class _ControlPanelConnector extends ConsumerWidget {
       onLlmProviderChanged: controller.updateLlmProvider,
       onLlmBaseUrlChanged: controller.updateLlmBaseUrl,
       onLlmModelChanged: controller.updateLlmModel,
+      onLlmCredentialModeChanged: controller.updateLlmCredentialMode,
       onLlmApiKeyChanged: controller.updateLlmApiKey,
       onLlmIdleBanterEnabledChanged: controller.updateLlmIdleBanterEnabled,
       onLlmIdleBanterMinSecondsChanged:
@@ -1159,7 +1162,8 @@ class _BoardWithClocksViewState {
 }
 
 bool _sameHardwareProfile(EngineHardwareProfile? a, EngineHardwareProfile? b) {
-  return a?.cpuThreads == b?.cpuThreads &&
+  return a?.runtime == b?.runtime &&
+      a?.cpuThreads == b?.cpuThreads &&
       a?.memoryMb == b?.memoryMb &&
       a?.recommendedThreads == b?.recommendedThreads &&
       a?.recommendedHashMb == b?.recommendedHashMb;
@@ -1167,6 +1171,7 @@ bool _sameHardwareProfile(EngineHardwareProfile? a, EngineHardwareProfile? b) {
 
 int _hardwareProfileHash(EngineHardwareProfile? profile) {
   return Object.hash(
+    profile?.runtime,
     profile?.cpuThreads,
     profile?.memoryMb,
     profile?.recommendedThreads,

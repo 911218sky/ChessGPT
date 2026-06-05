@@ -1,6 +1,6 @@
 import 'dart:math' as math;
 
-import 'package:dartchess/dartchess.dart';
+import 'package:chess_ai_desktop/src/chess/chess.dart';
 
 import 'engine_models.dart';
 import '../i18n/app_localizations.dart';
@@ -554,13 +554,42 @@ enum LlmProviderKind {
   }
 }
 
+enum LlmCredentialMode {
+  defaultProxy,
+  customApiKey;
+
+  String localizedLabel(AppStrings strings) => switch (strings.locale) {
+    AppLocale.en => switch (this) {
+      LlmCredentialMode.defaultProxy => 'Use default',
+      LlmCredentialMode.customApiKey => 'Enter API key',
+    },
+    AppLocale.zhHant => switch (this) {
+      LlmCredentialMode.defaultProxy => '使用預設',
+      LlmCredentialMode.customApiKey => '自行輸入',
+    },
+  };
+}
+
 class LlmSettings {
+  static const _defaultEnabled = bool.fromEnvironment(
+    'CHESS_AI_DEFAULT_LLM_ENABLED',
+  );
+  static const _defaultBaseUrl = String.fromEnvironment(
+    'CHESS_AI_WEB_LLM_PROXY_BASE_URL',
+    defaultValue: 'https://api.openai.com/v1',
+  );
+  static const _defaultModel = String.fromEnvironment(
+    'CHESS_AI_DEFAULT_LLM_MODEL',
+    defaultValue: 'gpt-5.5',
+  );
+
   const LlmSettings({
     this.providerKind = LlmProviderKind.openAiCompatible,
-    this.enabled = false,
+    this.enabled = _defaultEnabled,
     this.provider = 'OpenAI Compatible',
-    this.baseUrl = 'https://api.openai.com/v1',
-    this.model = 'gpt-5.5',
+    this.baseUrl = _defaultBaseUrl,
+    this.model = _defaultModel,
+    this.credentialMode = LlmCredentialMode.defaultProxy,
     this.apiKey = '',
     this.idleBanterEnabled = true,
     this.idleBanterMinSeconds = 10,
@@ -572,6 +601,7 @@ class LlmSettings {
   final String provider;
   final String baseUrl;
   final String model;
+  final LlmCredentialMode credentialMode;
   final String apiKey;
   final bool idleBanterEnabled;
   final int idleBanterMinSeconds;
@@ -583,6 +613,7 @@ class LlmSettings {
     String? provider,
     String? baseUrl,
     String? model,
+    LlmCredentialMode? credentialMode,
     String? apiKey,
     bool? idleBanterEnabled,
     int? idleBanterMinSeconds,
@@ -596,6 +627,7 @@ class LlmSettings {
       provider: provider ?? this.provider,
       baseUrl: baseUrl ?? this.baseUrl,
       model: model ?? this.model,
+      credentialMode: credentialMode ?? this.credentialMode,
       apiKey: apiKey ?? this.apiKey,
       idleBanterEnabled: idleBanterEnabled ?? this.idleBanterEnabled,
       idleBanterMinSeconds: minSeconds.clamp(5, 600).toInt(),
@@ -642,6 +674,11 @@ class LlmSettings {
         final String value when value.trim().isNotEmpty => value,
         _ => providerKind.defaultModel,
       },
+      credentialMode: _enumByName(
+        LlmCredentialMode.values,
+        json['credentialMode'],
+        LlmCredentialMode.defaultProxy,
+      ),
       apiKey: switch (json['apiKey']) {
         final String value => value,
         _ => const LlmSettings().apiKey,
@@ -661,6 +698,7 @@ class LlmSettings {
       'provider': provider,
       'baseUrl': baseUrl,
       'model': model,
+      'credentialMode': credentialMode.name,
       'apiKey': apiKey,
       'idleBanterEnabled': idleBanterEnabled,
       'idleBanterMinSeconds': idleBanterMinSeconds,

@@ -91,13 +91,23 @@ class AppStrings {
   };
 
   String get autoDetectHardware => switch (locale) {
-    AppLocale.en => 'Auto detect CPU and memory',
-    AppLocale.zhHant => '自動偵測 CPU 與記憶體',
+    AppLocale.en => 'Auto detect device resources',
+    AppLocale.zhHant => '自動偵測裝置資源',
   };
 
   String get detectedHardware => switch (locale) {
     AppLocale.en => 'Detected',
     AppLocale.zhHant => '偵測結果',
+  };
+
+  String get browserEngineRuntime => switch (locale) {
+    AppLocale.en => 'Browser Web Worker + WASM',
+    AppLocale.zhHant => '瀏覽器 Web Worker + WASM',
+  };
+
+  String browserEngineHardware(int cpuThreads) => switch (locale) {
+    AppLocale.en => '$cpuThreads logical CPU on this device',
+    AppLocale.zhHant => '此裝置 $cpuThreads 個邏輯 CPU',
   };
 
   String get timeControl => switch (locale) {
@@ -486,9 +496,21 @@ class AppStrings {
     AppLocale.zhHant => 'API Key',
   };
 
+  String get credentialMode => switch (locale) {
+    AppLocale.en => 'Credentials',
+    AppLocale.zhHant => '憑證',
+  };
+
+  String get defaultCredentialDescription => switch (locale) {
+    AppLocale.en =>
+      'Default mode uses the configured backend proxy credentials when available.',
+    AppLocale.zhHant => '預設模式會在可用時使用後端 proxy 設定好的憑證。',
+  };
+
   String apiKeyHint(String envName) => switch (locale) {
-    AppLocale.en => 'Common env var: $envName',
-    AppLocale.zhHant => '常用環境變數：$envName',
+    AppLocale.en =>
+      'Used only when credentials are set to Enter API key. Env var: $envName',
+    AppLocale.zhHant => '只有選擇自行輸入時才會使用。環境變數：$envName',
   };
 
   String get test => switch (locale) {

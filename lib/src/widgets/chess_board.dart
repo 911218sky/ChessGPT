@@ -1,6 +1,6 @@
 import 'dart:math' as math;
 
-import 'package:dartchess/dartchess.dart';
+import 'package:chess_ai_desktop/src/chess/chess.dart';
 import 'package:flutter/material.dart';
 
 import '../i18n/app_localizations.dart';
@@ -217,7 +217,7 @@ class _ChessBoardState extends State<ChessBoard> {
       if (line.moveUci.length < 4) {
         continue;
       }
-      final move = Move.parse(line.moveUci);
+      final move = parseUciMove(line.moveUci);
       switch (move) {
         case NormalMove(from: final from, to: final to):
           moves.add(
@@ -235,7 +235,8 @@ class _ChessBoardState extends State<ChessBoard> {
   String _hintMovesSignatureFor(List<_HintOverlayMove> moves) {
     return moves
         .map(
-          (move) => '${move.rank}-${move.move.from.name}-${move.move.to.name}',
+          (move) =>
+              '${move.rank}-${squareName(move.move.from)}-${squareName(move.move.to)}',
         )
         .join('|');
   }
@@ -243,13 +244,13 @@ class _ChessBoardState extends State<ChessBoard> {
   void _syncLegalMoveCaches() {
     final sourcesByTarget = <Square, Set<Square>>{};
     final actionable = <Square>{};
-    final legalMoves = makeLegalMoves(widget.position);
+    final legalMoves = widget.position.legalMoves;
     for (final entry in legalMoves.entries) {
       if (entry.value.isEmpty) {
         continue;
       }
       actionable.add(entry.key);
-      for (final target in entry.value) {
+      for (final target in entry.value.squares) {
         (sourcesByTarget[target] ??= <Square>{}).add(entry.key);
       }
     }
@@ -274,7 +275,7 @@ class _ChessBoardState extends State<ChessBoard> {
 
   Square? _kingSquareFor(Position position, Side side) {
     final board = position.board;
-    for (final square in Square.values) {
+    for (final square in allSquares) {
       final current = board.pieceAt(square);
       if (current?.color == side && current?.role == Role.king) {
         return square;
@@ -336,7 +337,8 @@ class _BoardGridLayer extends StatelessWidget {
         final isTarget = legalTargets.contains(square);
         final acceptedSources = acceptedDragSources[square] ?? const <Square>{};
         final isLastMove = square == lastMove?.from || square == lastMove?.to;
-        final baseIsLight = (square.file + square.rank).isOdd;
+        final baseIsLight =
+            (squareFileIndex(square) + squareRankIndex(square)).isOdd;
         final canRespondToCheck =
             piece == null ||
             piece.color != position.turn ||
@@ -374,7 +376,7 @@ class _BoardGridLayer extends StatelessWidget {
   Square _displaySquare(int row, int col) {
     final file = orientation == Side.white ? col : 7 - col;
     final rank = orientation == Side.white ? 7 - row : row;
-    return Square.fromCoords(File(file), Rank(rank));
+    return squareFromCoords(file, rank);
   }
 }
 
@@ -718,8 +720,8 @@ class _HintLinesPainter extends CustomPainter {
   }
 
   Offset _centerFor(Square square, double cell) {
-    final file = square.file.value;
-    final rank = square.rank.value;
+    final file = squareFileIndex(square);
+    final rank = squareRankIndex(square);
     final col = orientation == Side.white ? file : 7 - file;
     final row = orientation == Side.white ? 7 - rank : rank;
     return Offset((col + 0.5) * cell, (row + 0.5) * cell);
@@ -903,14 +905,14 @@ class _SquareButton extends StatelessWidget {
                 if (losingOverlay != null)
                   Positioned.fill(
                     child: DecoratedBox(
-                      key: ValueKey('losing-king-${square.name}'),
+                      key: ValueKey('losing-king-${squareName(square)}'),
                       decoration: losingOverlay,
                     ),
                   ),
                 if (checkedOverlay != null)
                   Positioned.fill(
                     child: DecoratedBox(
-                      key: ValueKey('checked-king-${square.name}'),
+                      key: ValueKey('checked-king-${squareName(square)}'),
                       decoration: checkedOverlay,
                     ),
                   ),
@@ -919,7 +921,7 @@ class _SquareButton extends StatelessWidget {
                     left: 6,
                     top: 3,
                     child: Text(
-                      square.rank.name,
+                      squareRankName(square),
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w800,
@@ -932,7 +934,7 @@ class _SquareButton extends StatelessWidget {
                     right: 6,
                     bottom: 3,
                     child: Text(
-                      square.file.name,
+                      squareFileName(square),
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w800,
@@ -1423,8 +1425,8 @@ class _GameOverPainter extends CustomPainter {
   }
 
   Offset _centerFor(Square square, double cell) {
-    final file = square.file.value;
-    final rank = square.rank.value;
+    final file = squareFileIndex(square);
+    final rank = squareRankIndex(square);
     final col = orientation == Side.white ? file : 7 - file;
     final row = orientation == Side.white ? 7 - rank : rank;
     return Offset((col + 0.5) * cell, (row + 0.5) * cell);
