@@ -64,6 +64,6 @@ jobs:
           build-args: |
             CHESS_AI_WEB_LLM_PROXY_BASE_URL=/v1
             CHESS_AI_DEFAULT_LLM_ENABLED=true
-            CHESS_AI_DEFAULT_LLM_MODEL=${{ vars.WEB_LLM_DEFAULT_MODEL || 'gpt-5.5' }}
+            CHESS_AI_DEFAULT_LLM_MODEL=${{ vars.WEB_LLM_DEFAULT_MODEL || 'GPT-5.4' }}
           cache-from: type=gha
           cache-to: type=gha,mode=max

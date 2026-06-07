@@ -13,11 +13,14 @@ RUN flutter pub get
 COPY . .
 ARG CHESS_AI_WEB_LLM_PROXY_BASE_URL=
 ARG CHESS_AI_DEFAULT_LLM_ENABLED=false
-ARG CHESS_AI_DEFAULT_LLM_MODEL=gpt-5.5
+ARG CHESS_AI_DEFAULT_LLM_MODEL=GPT-5.4
 RUN flutter build web --release \
   --dart-define "CHESS_AI_WEB_LLM_PROXY_BASE_URL=${CHESS_AI_WEB_LLM_PROXY_BASE_URL}" \
   --dart-define "CHESS_AI_DEFAULT_LLM_ENABLED=${CHESS_AI_DEFAULT_LLM_ENABLED}" \
-  --dart-define "CHESS_AI_DEFAULT_LLM_MODEL=${CHESS_AI_DEFAULT_LLM_MODEL}"
+  --dart-define "CHESS_AI_DEFAULT_LLM_MODEL=${CHESS_AI_DEFAULT_LLM_MODEL}" \
+  && BUILD_ID="$(date +%s)" \
+  && sed -i "s/flutter_bootstrap.js/flutter_bootstrap.js?v=${BUILD_ID}/" build/web/index.html \
+  && sed -i "s/\"mainJsPath\":\"main.dart.js\"/\"mainJsPath\":\"main.dart.js?v=${BUILD_ID}\"/" build/web/flutter_bootstrap.js
 
 FROM ${NGINX_IMAGE} AS runtime
 

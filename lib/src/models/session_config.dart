@@ -500,11 +500,11 @@ enum LlmProviderKind {
   };
 
   String get defaultModel => switch (this) {
-    LlmProviderKind.openAiCompatible => 'gpt-5.5',
+    LlmProviderKind.openAiCompatible => 'GPT-5.4',
     LlmProviderKind.googleGemini => 'gemini-2.5-flash',
     LlmProviderKind.kimiCode => 'kimi-for-coding',
     LlmProviderKind.anthropicClaude => 'claude-sonnet-4-0',
-    LlmProviderKind.customCompatible => 'gpt-5.5',
+    LlmProviderKind.customCompatible => 'GPT-5.4',
   };
 
   String get apiKeyHint => switch (this) {
@@ -580,7 +580,7 @@ class LlmSettings {
   );
   static const _defaultModel = String.fromEnvironment(
     'CHESS_AI_DEFAULT_LLM_MODEL',
-    defaultValue: 'gpt-5.5',
+    defaultValue: 'GPT-5.4',
   );
 
   const LlmSettings({

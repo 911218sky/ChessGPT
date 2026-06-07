@@ -15,6 +15,26 @@ server {
     add_header Cache-Control "no-store";
   }
 
+  location = / {
+    add_header Cache-Control "no-store";
+    try_files /index.html =404;
+  }
+
+  location = /flutter_bootstrap.js {
+    add_header Cache-Control "no-store";
+    try_files /flutter_bootstrap.js =404;
+  }
+
+  location = /flutter_service_worker.js {
+    add_header Cache-Control "no-store";
+    try_files /flutter_service_worker.js =404;
+  }
+
+  location = /main.dart.js {
+    add_header Cache-Control "no-store";
+    try_files /main.dart.js =404;
+  }
+
   location /v1/ {
     proxy_ssl_server_name on;
     proxy_pass ${NGINX_LLM_PROXY_TARGET};

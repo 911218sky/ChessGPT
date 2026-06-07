@@ -75,10 +75,7 @@ class LlmCommentaryService {
       () => _client
           .post(
             uri,
-            headers: _headers(
-              settings,
-              includeContentType: !_usesAnonymousDefaultProxy(settings),
-            ),
+            headers: _headers(settings),
             body: jsonEncode({
               'model': settings.model,
               'messages': [
@@ -142,17 +139,6 @@ class LlmCommentaryService {
       return proxy;
     }
     return configured;
-  }
-
-  bool _usesAnonymousDefaultProxy(LlmSettings settings) {
-    return settings.credentialMode == LlmCredentialMode.defaultProxy &&
-        _defaultProxyClientKey.trim().isEmpty &&
-        _normalizeBaseUrl(_effectiveBaseUrl(settings)) ==
-            _normalizeBaseUrl(_defaultProxyBaseUrl);
-  }
-
-  String _normalizeBaseUrl(String baseUrl) {
-    return baseUrl.trim().replaceAll(RegExp(r'/+$'), '');
   }
 
   Map<String, String> _headers(

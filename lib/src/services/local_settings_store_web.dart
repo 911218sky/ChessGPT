@@ -23,7 +23,7 @@ class LocalSettingsStore {
   );
   static const _defaultLlmModel = String.fromEnvironment(
     'CHESS_AI_DEFAULT_LLM_MODEL',
-    defaultValue: 'gpt-5.5',
+    defaultValue: 'GPT-5.4',
   );
 
   final Future<Map<String, Object?>?> Function()? _readSettingsJsonOverride;

@@ -142,7 +142,7 @@ docker run --rm -p 5432:80 chess-ai-desktop-web:local
 Optional Docker LLM environment values:
 
 ```text
-WEB_LLM_DEFAULT_MODEL=gpt-5.5
+WEB_LLM_DEFAULT_MODEL=GPT-5.4
 NGINX_LLM_PROXY_TARGET=https://www.inroi.shop/v1/
 NGINX_LLM_PROXY_AUTHORIZATION=Bearer <provider-api-key>
 ```
