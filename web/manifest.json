@@ -1,6 +1,6 @@
 {
-    "name": "Chess AI Desktop",
-    "short_name": "Chess AI",
+    "name": "ChessGPT",
+    "short_name": "ChessGPT",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

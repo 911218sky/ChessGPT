@@ -2,8 +2,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:chess_ai_desktop/src/models/session_config.dart';
-import 'package:chess_ai_desktop/src/services/local_settings_store.dart';
+import 'package:chessgpt/src/models/session_config.dart';
+import 'package:chessgpt/src/services/local_settings_store.dart';
 
 void main() {
   test(
@@ -44,7 +44,7 @@ void main() {
 
   test('stores settings.json inside the provided portable directory', () async {
     final tempDirectory = await Directory.systemTemp.createTemp(
-      'chess-ai-settings-test-',
+      'chessgpt-settings-test-',
     );
     addTearDown(() async {
       if (await tempDirectory.exists()) {

@@ -1,4 +1,4 @@
-import 'package:chess_ai_desktop/src/chess/chess.dart';
+import 'package:chessgpt/src/chess/chess.dart';
 
 import 'engine_models.dart';
 import 'session_config.dart';

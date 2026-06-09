@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:chess_ai_desktop/src/app.dart';
-import 'package:chess_ai_desktop/src/widgets/chess_board.dart';
+import 'package:chessgpt/src/app.dart';
+import 'package:chessgpt/src/widgets/chess_board.dart';
 
 void main() {
   testWidgets('renders chess project shell', (WidgetTester tester) async {

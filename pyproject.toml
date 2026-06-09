@@ -1,7 +1,7 @@
 [project]
-name = "chess-ai-desktop-image-tools"
+name = "chessgpt-image-tools"
 version = "0.1.0"
-description = "Batch image generation helpers for chess_ai_desktop assets"
+description = "Batch image generation helpers for chessgpt assets"
 readme = "README.md"
 requires-python = ">=3.12,<3.13"
 dependencies = [

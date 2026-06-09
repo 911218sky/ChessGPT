@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:chess_ai_desktop/src/utils/text_sanitizer.dart';
+import 'package:chessgpt/src/utils/text_sanitizer.dart';
 
 void main() {
   test('removes leading dialogue speaker labels', () {

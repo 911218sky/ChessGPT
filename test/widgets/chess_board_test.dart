@@ -1,11 +1,11 @@
-import 'package:chess_ai_desktop/src/chess/chess.dart';
+import 'package:chessgpt/src/chess/chess.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:chess_ai_desktop/src/models/engine_models.dart';
-import 'package:chess_ai_desktop/src/models/game_state.dart';
-import 'package:chess_ai_desktop/src/theme/board_theme.dart';
-import 'package:chess_ai_desktop/src/widgets/chess_board.dart';
+import 'package:chessgpt/src/models/engine_models.dart';
+import 'package:chessgpt/src/models/game_state.dart';
+import 'package:chessgpt/src/theme/board_theme.dart';
+import 'package:chessgpt/src/widgets/chess_board.dart';
 
 void main() {
   testWidgets('renders hint lines and accepts an equivalent replacement list', (

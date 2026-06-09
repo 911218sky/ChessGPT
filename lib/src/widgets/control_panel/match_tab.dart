@@ -1,4 +1,4 @@
-import 'package:chess_ai_desktop/src/chess/chess.dart';
+import 'package:chessgpt/src/chess/chess.dart';
 import 'package:flutter/material.dart';
 
 import '../../i18n/app_localizations.dart';

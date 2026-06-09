@@ -1,6 +1,6 @@
 import 'dart:math' as math;
 
-import 'package:chess_ai_desktop/src/chess/chess.dart';
+import 'package:chessgpt/src/chess/chess.dart';
 
 import 'engine_models.dart';
 import '../i18n/app_localizations.dart';

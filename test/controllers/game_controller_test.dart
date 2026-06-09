@@ -1,18 +1,18 @@
 import 'dart:async';
 
-import 'package:chess_ai_desktop/src/chess/chess.dart';
+import 'package:chessgpt/src/chess/chess.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:chess_ai_desktop/src/controllers/game_controller.dart';
-import 'package:chess_ai_desktop/src/i18n/app_localizations.dart';
-import 'package:chess_ai_desktop/src/models/engine_models.dart';
-import 'package:chess_ai_desktop/src/models/game_state.dart';
-import 'package:chess_ai_desktop/src/models/session_config.dart';
-import 'package:chess_ai_desktop/src/services/llm_commentary_service.dart';
-import 'package:chess_ai_desktop/src/services/local_settings_store.dart';
-import 'package:chess_ai_desktop/src/services/stockfish_service.dart';
-import 'package:chess_ai_desktop/src/theme/board_theme.dart';
+import 'package:chessgpt/src/controllers/game_controller.dart';
+import 'package:chessgpt/src/i18n/app_localizations.dart';
+import 'package:chessgpt/src/models/engine_models.dart';
+import 'package:chessgpt/src/models/game_state.dart';
+import 'package:chessgpt/src/models/session_config.dart';
+import 'package:chessgpt/src/services/llm_commentary_service.dart';
+import 'package:chessgpt/src/services/local_settings_store.dart';
+import 'package:chessgpt/src/services/stockfish_service.dart';
+import 'package:chessgpt/src/theme/board_theme.dart';
 
 void main() {
   test(

@@ -3,8 +3,8 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:chess_ai_desktop/src/models/session_config.dart';
-import 'package:chess_ai_desktop/src/services/llm_commentary_service.dart';
+import 'package:chessgpt/src/models/session_config.dart';
+import 'package:chessgpt/src/services/llm_commentary_service.dart';
 
 void main() {
   test(

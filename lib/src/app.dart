@@ -1,5 +1,5 @@
 import 'dart:math' as math;
-import 'package:chess_ai_desktop/src/chess/chess.dart';
+import 'package:chessgpt/src/chess/chess.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
@@ -85,7 +85,7 @@ class ChessAIDesktopApp extends ConsumerWidget {
     );
 
     return MaterialApp(
-      title: 'Chess AI Desktop',
+      title: 'ChessGPT',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: colorScheme,

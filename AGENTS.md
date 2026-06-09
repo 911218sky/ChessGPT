@@ -1,7 +1,7 @@
-# chess_ai_desktop Agent Guide
+# chessgpt Agent Guide
 
 Use this file as the project-level entry point when working inside
-`chess_ai_desktop`.
+`chessgpt`.
 
 Start here, then open the task-relevant docs and source files.
 
@@ -190,7 +190,7 @@ Rules:
 
 - Keep shared `lib/` code free of direct `dart:io` imports
 - Use conditional exports for platform-specific services
-- Import chess APIs through `package:chess_ai_desktop/src/chess/chess.dart`
+- Import chess APIs through `package:chessgpt/src/chess/chess.dart`
   instead of importing `package:dartchess/dartchess.dart` directly
 - Put API differences between `dartchess` and `dartchess_webok` behind
   `lib/src/chess/chess_compat_*.dart`

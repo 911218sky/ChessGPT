@@ -1,7 +1,7 @@
 services:
-  chess-ai-web:
-    container_name: sky-chess-ai-web
-    image: ghcr.io/911218sky/chess_ai_desktop:web-support
+  chessgpt-web:
+    container_name: sky-chessgpt-web
+    image: ghcr.io/911218sky/chessgpt:web-support
     pull_policy: always
     environment:
       NGINX_LLM_PROXY_AUTHORIZATION: ${NGINX_LLM_PROXY_AUTHORIZATION:-}

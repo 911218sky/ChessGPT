@@ -1,6 +1,6 @@
-# Chess AI Desktop Design Guide
+# ChessGPT Design Guide
 
-This is the main design document for `chess_ai_desktop`.
+This is the main design document for `chessgpt`.
 Keep UI, board themes, and generated assets aligned with this file.
 
 ## Product Direction

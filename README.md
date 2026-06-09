@@ -1,4 +1,4 @@
-# Chess AI Desktop
+# ChessGPT
 
 A Flutter chess app with desktop and web builds, a local Stockfish engine on desktop, optional LLM commentary, coach hints, and themeable boards.
 
@@ -132,11 +132,11 @@ Do not put the real provider key in Dockerfile build args or Flutter `--dart-def
 If you need to test a local Dockerfile change, build and run it manually:
 
 ```bash
-docker build -t chess-ai-desktop-web:local .
+docker build -t chessgpt-web:local .
 ```
 
 ```bash
-docker run --rm -p 5432:80 chess-ai-desktop-web:local
+docker run --rm -p 5432:80 chessgpt-web:local
 ```
 
 Optional Docker LLM environment values:
@@ -153,7 +153,7 @@ GitHub Actions automatically builds and pushes the Docker image to GHCR on
 pushes to `main`, `web-support`, and version tags:
 
 ```text
-ghcr.io/911218sky/chess_ai_desktop:web-support
+ghcr.io/911218sky/chessgpt:web-support
 ```
 
 Run the remote image locally on port `5432`:
@@ -162,7 +162,7 @@ Run the remote image locally on port `5432`:
 docker run --rm \
   -p 5432:80 \
   -e NGINX_LLM_PROXY_AUTHORIZATION='Bearer <provider-api-key>' \
-  ghcr.io/911218sky/chess_ai_desktop:web-support
+  ghcr.io/911218sky/chessgpt:web-support
 ```
 
 ## LLM Secrets
@@ -187,7 +187,7 @@ POST /v1/chat/completions
 Because the Docker web app calls same-origin `/v1`, browser CORS is not needed
 for local use. nginx handles the provider request from inside the container.
 
-## Web Chess AI
+## Web ChessGPT
 
 The web build bundles Stockfish.js 17.1 lite single-thread WASM in:
 
@@ -298,8 +298,8 @@ rtk flutter build windows --release
 Web container build:
 
 ```bash
-docker build -t chess-ai-desktop-web .
-docker run --rm -p 5432:80 chess-ai-desktop-web
+docker build -t chessgpt-web .
+docker run --rm -p 5432:80 chessgpt-web
 docker compose up -d
 ```
 

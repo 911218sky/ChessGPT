@@ -1,14 +1,14 @@
-import 'package:chess_ai_desktop/src/chess/chess.dart';
+import 'package:chessgpt/src/chess/chess.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:chess_ai_desktop/src/i18n/app_localizations.dart';
-import 'package:chess_ai_desktop/src/models/bot_roster.dart';
-import 'package:chess_ai_desktop/src/models/engine_models.dart';
-import 'package:chess_ai_desktop/src/models/game_state.dart';
-import 'package:chess_ai_desktop/src/models/session_config.dart';
-import 'package:chess_ai_desktop/src/theme/board_theme.dart';
-import 'package:chess_ai_desktop/src/widgets/control_panel.dart';
+import 'package:chessgpt/src/i18n/app_localizations.dart';
+import 'package:chessgpt/src/models/bot_roster.dart';
+import 'package:chessgpt/src/models/engine_models.dart';
+import 'package:chessgpt/src/models/game_state.dart';
+import 'package:chessgpt/src/models/session_config.dart';
+import 'package:chessgpt/src/theme/board_theme.dart';
+import 'package:chessgpt/src/widgets/control_panel.dart';
 
 void main() {
   test('control panel view state ignores board-only updates', () {

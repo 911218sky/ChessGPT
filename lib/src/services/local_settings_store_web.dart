@@ -13,7 +13,7 @@ class LocalSettingsStore {
   }) : _readSettingsJsonOverride = readSettingsJson,
        _writeSettingsJsonOverride = writeSettingsJson;
 
-  static const _storageKey = 'chess_ai_desktop.settings';
+  static const _storageKey = 'chessgpt.settings';
   static const _webDefaultLlmAppliedKey = 'webDefaultLlmApplied';
   static const _defaultLlmEnabled = bool.fromEnvironment(
     'CHESS_AI_DEFAULT_LLM_ENABLED',

@@ -16,11 +16,11 @@
 
 [Setup]
 AppId={{A1F25087-6E05-42DD-B6C2-0C25B0A7F7E8}
-AppName=Chess AI Desktop
+AppName=ChessGPT
 AppVersion={#AppVersion}
 AppPublisher={#AppPublisher}
-DefaultDirName={localappdata}\Chess AI Desktop
-DefaultGroupName=Chess AI Desktop
+DefaultDirName={localappdata}\ChessGPT
+DefaultGroupName=ChessGPT
 DisableProgramGroupPage=yes
 OutputDir={#OutputDir}
 OutputBaseFilename=chess_ai_desktop_{#AppVersion}_windows_setup
@@ -29,7 +29,7 @@ SolidCompression=yes
 WizardStyle=modern
 PrivilegesRequired=lowest
 ArchitecturesInstallIn64BitMode=x64compatible
-UninstallDisplayIcon={app}\chess_ai_desktop.exe
+UninstallDisplayIcon={app}\chessgpt.exe
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
@@ -41,8 +41,8 @@ Name: "desktopicon"; Description: "Create a desktop shortcut"; GroupDescription:
 Source: "{#SourceDir}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs; Excludes: "settings.json"
 
 [Icons]
-Name: "{autoprograms}\Chess AI Desktop"; Filename: "{app}\chess_ai_desktop.exe"
-Name: "{autodesktop}\Chess AI Desktop"; Filename: "{app}\chess_ai_desktop.exe"; Tasks: desktopicon
+Name: "{autoprograms}\ChessGPT"; Filename: "{app}\chessgpt.exe"
+Name: "{autodesktop}\ChessGPT"; Filename: "{app}\chessgpt.exe"; Tasks: desktopicon
 
 [Run]
-Filename: "{app}\chess_ai_desktop.exe"; Description: "Launch Chess AI Desktop"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\chessgpt.exe"; Description: "Launch ChessGPT"; Flags: nowait postinstall skipifsilent

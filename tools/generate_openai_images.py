@@ -81,7 +81,7 @@ def read_env() -> dict[str, str]:
 def build_client(env: dict[str, str]) -> OpenAI:
     if not env["api_key"]:
         raise RuntimeError(
-            "OPENAI_API_KEY is missing. Fill chess_ai_desktop/.env before running."
+            "OPENAI_API_KEY is missing. Fill chessgpt/.env before running."
         )
     return OpenAI(api_key=env["api_key"], base_url=env["base_url"])
 

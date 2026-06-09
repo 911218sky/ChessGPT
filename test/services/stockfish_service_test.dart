@@ -5,8 +5,8 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:chess_ai_desktop/src/models/engine_models.dart';
-import 'package:chess_ai_desktop/src/services/stockfish_service.dart';
+import 'package:chessgpt/src/models/engine_models.dart';
+import 'package:chessgpt/src/services/stockfish_service.dart';
 
 void main() {
   test('detectHardwareProfile prefers fewer default threads', () async {
