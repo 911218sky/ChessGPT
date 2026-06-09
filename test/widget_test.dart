@@ -12,7 +12,7 @@ void main() {
     addTearDown(tester.view.reset);
 
     await tester.pumpWidget(
-      const ProviderScope(child: ChessAIDesktopApp(autoInitialize: false)),
+      const ProviderScope(child: ChessGptApp(autoInitialize: false)),
     );
 
     expect(find.text('Play Bots'), findsOneWidget);
@@ -30,7 +30,7 @@ void main() {
     addTearDown(tester.view.reset);
 
     await tester.pumpWidget(
-      const ProviderScope(child: ChessAIDesktopApp(autoInitialize: false)),
+      const ProviderScope(child: ChessGptApp(autoInitialize: false)),
     );
 
     expect(tester.takeException(), isNull);
@@ -46,7 +46,7 @@ void main() {
     addTearDown(tester.view.reset);
 
     await tester.pumpWidget(
-      const ProviderScope(child: ChessAIDesktopApp(autoInitialize: false)),
+      const ProviderScope(child: ChessGptApp(autoInitialize: false)),
     );
 
     await tester.tap(find.byIcon(Icons.open_in_full_rounded).first);
@@ -95,7 +95,7 @@ void main() {
     addTearDown(tester.view.reset);
 
     await tester.pumpWidget(
-      const ProviderScope(child: ChessAIDesktopApp(autoInitialize: false)),
+      const ProviderScope(child: ChessGptApp(autoInitialize: false)),
     );
 
     expect(tester.takeException(), isNull);

@@ -67,8 +67,8 @@ Side? _losingSideForState(GameState state) {
   return outcome.winner == Side.white ? Side.black : Side.white;
 }
 
-class ChessAIDesktopApp extends ConsumerWidget {
-  const ChessAIDesktopApp({super.key, this.autoInitialize = true});
+class ChessGptApp extends ConsumerWidget {
+  const ChessGptApp({super.key, this.autoInitialize = true});
 
   final bool autoInitialize;
 
