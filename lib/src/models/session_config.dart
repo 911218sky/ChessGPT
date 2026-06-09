@@ -571,16 +571,28 @@ enum LlmCredentialMode {
 }
 
 class LlmSettings {
-  static const _defaultEnabled = bool.fromEnvironment(
+  static const _legacyDefaultEnabled = bool.fromEnvironment(
     'CHESS_AI_DEFAULT_LLM_ENABLED',
   );
-  static const _defaultBaseUrl = String.fromEnvironment(
+  static const _defaultEnabled = bool.fromEnvironment(
+    'CHESSGPT_DEFAULT_LLM_ENABLED',
+    defaultValue: _legacyDefaultEnabled,
+  );
+  static const _legacyDefaultBaseUrl = String.fromEnvironment(
     'CHESS_AI_WEB_LLM_PROXY_BASE_URL',
     defaultValue: 'https://api.openai.com/v1',
   );
-  static const _defaultModel = String.fromEnvironment(
+  static const _defaultBaseUrl = String.fromEnvironment(
+    'CHESSGPT_WEB_LLM_PROXY_BASE_URL',
+    defaultValue: _legacyDefaultBaseUrl,
+  );
+  static const _legacyDefaultModel = String.fromEnvironment(
     'CHESS_AI_DEFAULT_LLM_MODEL',
     defaultValue: 'GPT-5.4',
+  );
+  static const _defaultModel = String.fromEnvironment(
+    'CHESSGPT_DEFAULT_LLM_MODEL',
+    defaultValue: _legacyDefaultModel,
   );
 
   const LlmSettings({

@@ -15,15 +15,27 @@ class LocalSettingsStore {
 
   static const _storageKey = 'chessgpt.settings';
   static const _webDefaultLlmAppliedKey = 'webDefaultLlmApplied';
-  static const _defaultLlmEnabled = bool.fromEnvironment(
+  static const _legacyDefaultLlmEnabled = bool.fromEnvironment(
     'CHESS_AI_DEFAULT_LLM_ENABLED',
   );
-  static const _defaultProxyBaseUrl = String.fromEnvironment(
+  static const _defaultLlmEnabled = bool.fromEnvironment(
+    'CHESSGPT_DEFAULT_LLM_ENABLED',
+    defaultValue: _legacyDefaultLlmEnabled,
+  );
+  static const _legacyDefaultProxyBaseUrl = String.fromEnvironment(
     'CHESS_AI_WEB_LLM_PROXY_BASE_URL',
   );
-  static const _defaultLlmModel = String.fromEnvironment(
+  static const _defaultProxyBaseUrl = String.fromEnvironment(
+    'CHESSGPT_WEB_LLM_PROXY_BASE_URL',
+    defaultValue: _legacyDefaultProxyBaseUrl,
+  );
+  static const _legacyDefaultLlmModel = String.fromEnvironment(
     'CHESS_AI_DEFAULT_LLM_MODEL',
     defaultValue: 'GPT-5.4',
+  );
+  static const _defaultLlmModel = String.fromEnvironment(
+    'CHESSGPT_DEFAULT_LLM_MODEL',
+    defaultValue: _legacyDefaultLlmModel,
   );
 
   final Future<Map<String, Object?>?> Function()? _readSettingsJsonOverride;

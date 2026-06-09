@@ -10,10 +10,12 @@ class LlmCommentaryService {
     : _client = client is http.Client ? client : BrowserClient();
 
   static const _defaultProxyBaseUrl = String.fromEnvironment(
-    'CHESS_AI_WEB_LLM_PROXY_BASE_URL',
+    'CHESSGPT_WEB_LLM_PROXY_BASE_URL',
+    defaultValue: String.fromEnvironment('CHESS_AI_WEB_LLM_PROXY_BASE_URL'),
   );
   static const _defaultProxyClientKey = String.fromEnvironment(
-    'CHESS_AI_WEB_LLM_PROXY_CLIENT_KEY',
+    'CHESSGPT_WEB_LLM_PROXY_CLIENT_KEY',
+    defaultValue: String.fromEnvironment('CHESS_AI_WEB_LLM_PROXY_CLIENT_KEY'),
   );
 
   final http.Client _client;
@@ -119,7 +121,7 @@ class LlmCommentaryService {
     final baseUrl = _effectiveBaseUrl(settings);
     if (baseUrl.isEmpty) {
       throw const LlmException(
-        'Web LLM needs a backend proxy base URL. Configure CHESS_AI_WEB_LLM_PROXY_BASE_URL or set a proxy URL in the LLM panel.',
+        'Web LLM needs a backend proxy base URL. Configure CHESSGPT_WEB_LLM_PROXY_BASE_URL or set a proxy URL in the LLM panel.',
       );
     }
     if (_looksLikePublicProvider(baseUrl)) {

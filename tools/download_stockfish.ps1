@@ -7,30 +7,30 @@ param(
 $ErrorActionPreference = "Stop"
 
 $ReleaseTag = if ([string]::IsNullOrWhiteSpace($ReleaseTag)) {
-  if ([string]::IsNullOrWhiteSpace($env:CHESS_AI_DESKTOP_STOCKFISH_RELEASE_TAG)) {
+  if ([string]::IsNullOrWhiteSpace($env:CHESSGPT_STOCKFISH_RELEASE_TAG)) {
     "sf_18"
   } else {
-    $env:CHESS_AI_DESKTOP_STOCKFISH_RELEASE_TAG
+    $env:CHESSGPT_STOCKFISH_RELEASE_TAG
   }
 } else {
   $ReleaseTag
 }
 
 $AssetName = if ([string]::IsNullOrWhiteSpace($AssetName)) {
-  if ([string]::IsNullOrWhiteSpace($env:CHESS_AI_DESKTOP_STOCKFISH_ASSET_NAME)) {
+  if ([string]::IsNullOrWhiteSpace($env:CHESSGPT_STOCKFISH_ASSET_NAME)) {
     "stockfish-windows-x86-64.zip"
   } else {
-    $env:CHESS_AI_DESKTOP_STOCKFISH_ASSET_NAME
+    $env:CHESSGPT_STOCKFISH_ASSET_NAME
   }
 } else {
   $AssetName
 }
 
 $DestinationPath = if ([string]::IsNullOrWhiteSpace($DestinationPath)) {
-  if ([string]::IsNullOrWhiteSpace($env:CHESS_AI_DESKTOP_STOCKFISH_DESTINATION_PATH)) {
+  if ([string]::IsNullOrWhiteSpace($env:CHESSGPT_STOCKFISH_DESTINATION_PATH)) {
     "third_party\\stockfish\\windows\\stockfish.exe"
   } else {
-    $env:CHESS_AI_DESKTOP_STOCKFISH_DESTINATION_PATH
+    $env:CHESSGPT_STOCKFISH_DESTINATION_PATH
   }
 } else {
   $DestinationPath

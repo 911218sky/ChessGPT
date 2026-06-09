@@ -18,10 +18,10 @@ permissions:
   contents: write
 
 env:
-  CHESS_AI_DESKTOP_STOCKFISH_RELEASE_TAG: ${{ vars.CHESS_AI_DESKTOP_STOCKFISH_RELEASE_TAG }}
-  CHESS_AI_DESKTOP_STOCKFISH_ASSET_NAME: ${{ vars.CHESS_AI_DESKTOP_STOCKFISH_ASSET_NAME }}
-  CHESS_AI_DESKTOP_STOCKFISH_DESTINATION_PATH: third_party\stockfish\windows\stockfish.exe
-  CHESS_AI_DESKTOP_APP_PUBLISHER: ${{ vars.CHESS_AI_DESKTOP_APP_PUBLISHER }}
+  CHESSGPT_STOCKFISH_RELEASE_TAG: ${{ vars.CHESSGPT_STOCKFISH_RELEASE_TAG }}
+  CHESSGPT_STOCKFISH_ASSET_NAME: ${{ vars.CHESSGPT_STOCKFISH_ASSET_NAME }}
+  CHESSGPT_STOCKFISH_DESTINATION_PATH: third_party\stockfish\windows\stockfish.exe
+  CHESSGPT_APP_PUBLISHER: ${{ vars.CHESSGPT_APP_PUBLISHER }}
 
 jobs:
   build-and-release:
@@ -75,9 +75,9 @@ jobs:
         shell: pwsh
         run: |
           powershell -ExecutionPolicy Bypass -File .\tools\download_stockfish.ps1 `
-            -ReleaseTag $env:CHESS_AI_DESKTOP_STOCKFISH_RELEASE_TAG `
-            -AssetName $env:CHESS_AI_DESKTOP_STOCKFISH_ASSET_NAME `
-            -DestinationPath $env:CHESS_AI_DESKTOP_STOCKFISH_DESTINATION_PATH
+            -ReleaseTag $env:CHESSGPT_STOCKFISH_RELEASE_TAG `
+            -AssetName $env:CHESSGPT_STOCKFISH_ASSET_NAME `
+            -DestinationPath $env:CHESSGPT_STOCKFISH_DESTINATION_PATH
 
       - name: Build Windows Release
         run: flutter build windows --release
