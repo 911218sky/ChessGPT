@@ -100,18 +100,18 @@ jobs:
             Remove-Item $settingsFile -Force
           }
 
-          $portableZip = Join-Path $artifactDir "chess_ai_desktop_${env:RELEASE_VERSION}_windows_portable.zip"
+          $portableZip = Join-Path $artifactDir "chessgpt_${env:RELEASE_VERSION}_windows_portable.zip"
           if (Test-Path $portableZip) {
             Remove-Item $portableZip -Force
           }
           Compress-Archive -Path (Join-Path $releaseDir "*") -DestinationPath $portableZip
 
           $iscc = "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe"
-          $appPublisher = $env:CHESS_AI_DESKTOP_APP_PUBLISHER
+          $appPublisher = $env:CHESSGPT_APP_PUBLISHER
           if ([string]::IsNullOrWhiteSpace($appPublisher)) {
             $appPublisher = "911218sky"
           }
-          & $iscc ".\packaging\windows\chess_ai_desktop.iss" `
+          & $iscc ".\packaging\windows\chessgpt.iss" `
             "/DAppVersion=$env:RELEASE_VERSION" `
             "/DAppPublisher=$appPublisher" `
             "/DSourceDir=$releaseDir" `
@@ -120,10 +120,10 @@ jobs:
       - name: Upload Workflow Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: chess-ai-desktop-${{ steps.metadata.outputs.version }}
+          name: chessgpt-${{ steps.metadata.outputs.version }}
           path: |
-            artifacts/chess_ai_desktop_${{ steps.metadata.outputs.version }}_windows_portable.zip
-            artifacts/chess_ai_desktop_${{ steps.metadata.outputs.version }}_windows_setup.exe
+            artifacts/chessgpt_${{ steps.metadata.outputs.version }}_windows_portable.zip
+            artifacts/chessgpt_${{ steps.metadata.outputs.version }}_windows_setup.exe
 
       - name: Publish GitHub Release
         shell: pwsh
@@ -132,8 +132,8 @@ jobs:
           RELEASE_VERSION: ${{ steps.metadata.outputs.version }}
           RELEASE_TARGET: ${{ steps.metadata.outputs.target }}
         run: |
-          $portable = Resolve-Path "artifacts/chess_ai_desktop_${env:RELEASE_VERSION}_windows_portable.zip"
-          $installer = Resolve-Path "artifacts/chess_ai_desktop_${env:RELEASE_VERSION}_windows_setup.exe"
+          $portable = Resolve-Path "artifacts/chessgpt_${env:RELEASE_VERSION}_windows_portable.zip"
+          $installer = Resolve-Path "artifacts/chessgpt_${env:RELEASE_VERSION}_windows_setup.exe"
 
           gh release view $env:RELEASE_VERSION *> $null
           if ($LASTEXITCODE -eq 0) {
