@@ -305,7 +305,7 @@ docker compose up -d
 
 Packaging-related files:
 
-- `packaging/windows/chess_ai_desktop.iss`
+- `packaging/windows/chessgpt.iss`
 - `windows/runner/resources/app_icon.ico`
 - `windows/runner/Runner.rc`
 
