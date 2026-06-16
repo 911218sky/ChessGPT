@@ -36,9 +36,14 @@ server {
   }
 
   location /v1/ {
+    resolver 1.1.1.1 8.8.8.8 ipv6=off valid=300s;
+    set $llm_proxy_origin ${NGINX_LLM_PROXY_TARGET};
+    set $llm_proxy_host ${NGINX_LLM_PROXY_HOST};
+
     proxy_ssl_server_name on;
-    proxy_pass ${NGINX_LLM_PROXY_TARGET};
-    proxy_set_header Host www.inroi.shop;
+    proxy_ssl_name $llm_proxy_host;
+    proxy_pass $llm_proxy_origin$request_uri;
+    proxy_set_header Host $llm_proxy_host;
     proxy_set_header Authorization "${NGINX_LLM_PROXY_AUTHORIZATION}";
     proxy_set_header Accept $http_accept;
     proxy_set_header Content-Type $content_type;

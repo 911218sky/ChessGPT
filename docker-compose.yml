@@ -5,7 +5,8 @@ services:
     pull_policy: always
     environment:
       NGINX_LLM_PROXY_AUTHORIZATION: ${NGINX_LLM_PROXY_AUTHORIZATION:-}
-      NGINX_LLM_PROXY_TARGET: ${NGINX_LLM_PROXY_TARGET:-https://www.inroi.shop/v1/}
+      NGINX_LLM_PROXY_HOST: ${NGINX_LLM_PROXY_HOST:-www.inroi.shop}
+      NGINX_LLM_PROXY_TARGET: ${NGINX_LLM_PROXY_TARGET:-https://www.inroi.shop}
     ports:
       - "5432:80"
     restart: unless-stopped

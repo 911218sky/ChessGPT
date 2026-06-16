@@ -31,7 +31,7 @@ class LocalSettingsStore {
   );
   static const _legacyDefaultLlmModel = String.fromEnvironment(
     'CHESS_AI_DEFAULT_LLM_MODEL',
-    defaultValue: 'GPT-5.4',
+    defaultValue: 'codex-auto-review',
   );
   static const _defaultLlmModel = String.fromEnvironment(
     'CHESSGPT_DEFAULT_LLM_MODEL',

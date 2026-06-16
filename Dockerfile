@@ -13,7 +13,7 @@ RUN flutter pub get
 COPY . .
 ARG CHESSGPT_WEB_LLM_PROXY_BASE_URL=
 ARG CHESSGPT_DEFAULT_LLM_ENABLED=false
-ARG CHESSGPT_DEFAULT_LLM_MODEL=GPT-5.4
+ARG CHESSGPT_DEFAULT_LLM_MODEL=codex-auto-review
 RUN flutter build web --release \
   --dart-define "CHESSGPT_WEB_LLM_PROXY_BASE_URL=${CHESSGPT_WEB_LLM_PROXY_BASE_URL}" \
   --dart-define "CHESSGPT_DEFAULT_LLM_ENABLED=${CHESSGPT_DEFAULT_LLM_ENABLED}" \
@@ -24,7 +24,8 @@ RUN flutter build web --release \
 
 FROM ${NGINX_IMAGE} AS runtime
 
-ENV NGINX_LLM_PROXY_TARGET=https://www.inroi.shop/v1/ \
+ENV NGINX_LLM_PROXY_TARGET=https://www.inroi.shop \
+    NGINX_LLM_PROXY_HOST=www.inroi.shop \
     NGINX_LLM_PROXY_AUTHORIZATION=
 
 COPY docker/nginx.conf.template /etc/nginx/templates/default.conf.template

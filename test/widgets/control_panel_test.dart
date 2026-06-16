@@ -65,7 +65,7 @@ void main() {
     expect(find.text('custom-model'), findsNothing);
     expect(_llmTextField(tester, 0).controller?.text, 'OpenAI Compatible');
     expect(find.text('https://api.openai.com/v1'), findsOneWidget);
-    expect(find.text('GPT-5.4'), findsOneWidget);
+    expect(find.text('codex-auto-review'), findsOneWidget);
     expect(_llmTextField(tester, 3).controller?.text, isEmpty);
   });
 
